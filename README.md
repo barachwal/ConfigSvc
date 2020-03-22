@@ -1,2 +1,2 @@
 # ConfigSvc
-c++ module for handy experimental/simulation software configuration
+c++ module for handy experiment/simulation software configuration
