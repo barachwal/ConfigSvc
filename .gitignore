@@ -31,5 +31,6 @@
 *.out
 *.app
 
-# Editors
+# Editors and build systems
 .idea/
+cmake-build-debug/

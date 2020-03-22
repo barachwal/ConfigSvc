@@ -1,0 +1,8 @@
+//
+// Created by barachwal on 22.03.2020.
+//
+
+#ifndef CONFIGSVC_CONFIGURATION_HH
+#define CONFIGSVC_CONFIGURATION_HH
+
+#endif //CONFIGSVC_CONFIGURATION_HH
