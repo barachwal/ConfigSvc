@@ -55,6 +55,9 @@ class ModuleConfig {
         /// \brief Change global status for the given module.
         void SetStatus(bool status_new);
 
+        ///
+        std::string Name() const { return m_name; }
+
         ///\brief The direct method for getting the actual value of the particular unit.
         template <typename T> T GetValue(const std::string& unit) {
             return std::any_cast<T>(GetValue(unit));
