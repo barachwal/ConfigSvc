@@ -8,7 +8,7 @@ set(SOURCES_DIR ${PROJECT_SOURCE_DIR}/src)
 
 include_directories(${HEADERS_DIR})
 
-set(SOURCES ${SOURCES_DIR}/Configuration.cc)
+set(SOURCES ${SOURCES_DIR}/ModuleConfig.cc)
 
 # This needs to be done universally to any static library
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
