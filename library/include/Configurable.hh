@@ -40,15 +40,14 @@ class Configurable : public std::enable_shared_from_this<Configurable> {
         virtual void Configure() = 0;
         /// EXAMPLE OVERRIDE:
         /// void MyModuleClass::Configure() override {
-        ///     SetName("MyModuleName") // once it was not given at the ctr call
-        ///     m_units.emplace_back("UnitParameter1");
-        ///     m_units.emplace_back("UnitParameter2");
-        ///     m_units.emplace_back("UnitParameter3");
-        ///     m_units.emplace_back("UnitParameter4");
+        ///     DefineUnit<float>("UnitParameter1");
+        ///     DefineUnit<MyClass>("UnitParameter2");
+        ///     DefineUnit<std::shared_ptr<MyClass>>("UnitParameter3");
+        ///     DefineUnit<std::tuple>("UnitParameter4");
         ///     ...
         ///     // The following have to be called from here!
         ///     Configurable::DefaultConfig();   // setup the default configuration for all defined units/parameters
-        ///     Configurable::Register();        // register this module int the main service
+        ///     Configurable::PrintConfig();     // print or not to print...
         /// }
 
         ///\brief Pure virtual method for implementing the default set of values for all units of given module.
