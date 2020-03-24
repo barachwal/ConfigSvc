@@ -43,7 +43,7 @@ class Configurable : public std::enable_shared_from_this<Configurable> {
         ///     DefineUnit<float>("UnitParameter1");
         ///     DefineUnit<MyClass>("UnitParameter2");
         ///     DefineUnit<std::shared_ptr<MyClass>>("UnitParameter3");
-        ///     DefineUnit<std::tuple>("UnitParameter4");
+        ///     DefineUnit<std::tuple<double, char, std::string>>("UnitParameter4");
         ///     ...
         ///     // The following have to be called from here!
         ///     Configurable::DefaultConfig();   // setup the default configuration for all defined units/parameters
