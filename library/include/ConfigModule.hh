@@ -57,7 +57,10 @@ class ConfigModule {
         void SetStatus(bool status_new);
 
         ///
-        std::string Name() const { return m_name; }
+        std::string GetName() const { return m_name; }
+
+        ///
+        void SetName(const std::string& name) { m_name=name; }
 
         ///\brief The direct method for getting the actual value of the particular unit.
         template <typename T> T GetValue(const std::string& unit) const {
