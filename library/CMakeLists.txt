@@ -8,7 +8,7 @@ set(SOURCES_DIR ${PROJECT_SOURCE_DIR}/src)
 
 include_directories(${HEADERS_DIR})
 
-set(SOURCES ${SOURCES_DIR}/ModuleConfig.cc
+set(SOURCES ${SOURCES_DIR}/ConfigModule.cc
             ${SOURCES_DIR}/Configurable.cc
             ${SOURCES_DIR}/ConfigSvc.cc)
 

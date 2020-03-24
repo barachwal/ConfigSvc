@@ -2,8 +2,8 @@
 // Created by barachwal on 22.03.2020.
 //
 
-#ifndef CONFIGSVC_MODULECONFIG_HH
-#define CONFIGSVC_MODULECONFIG_HH
+#ifndef CONFIGSVC_CONFIGMODULE_HH
+#define CONFIGSVC_CONFIGMODULE_HH
 
 #include <any>
 #include <map>
@@ -13,8 +13,8 @@
 ///
 ///\class Configuration
 ///\brief The single module-like configuration class definition.
-///The ModuleConfig instance is intended to keep series of units and their value information.
-class ModuleConfig {
+///The ConfigModule instance is intended to keep series of units and their value information.
+class ConfigModule {
     private:
         ///
         std::string m_name = "NoName";
@@ -32,13 +32,13 @@ class ModuleConfig {
 
     public:
         ///
-        ModuleConfig() = default;
+        ConfigModule() = default;
 
         ///
-        ModuleConfig(const std::string& name):m_name(name){};
+        ConfigModule(const std::string& name): m_name(name){};
 
         ///
-        ~ModuleConfig() = default;
+        ~ConfigModule() = default;
 
         /// \brief Check if the specified unit already exists in Configuration instance.
         bool IsDefined(const std::string& unit) const;
@@ -66,4 +66,4 @@ class ModuleConfig {
 
 };
 
-#endif //CONFIGSVC_MODULECONFIG_HH
+#endif //CONFIGSVC_CONFIGMODULE_HH

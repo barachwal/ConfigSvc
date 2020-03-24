@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "ModuleConfig.hh"
+#include "ConfigModule.hh"
 
 int main(){
     std::cout << "[ConfigSvc::Ex1]:: example 1" << std::endl;

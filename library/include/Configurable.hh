@@ -7,7 +7,7 @@
 
 #include <vector>
 #include <memory>
-#include "ModuleConfig.hh"
+#include "ConfigModule.hh"
 
 class ConfigSvc;
 
@@ -23,7 +23,7 @@ class Configurable {
         virtual void DefaultConfig(const std::string&) = 0;
 
         ///\brief Get pointer to the actual Configuration object being created for a given model.
-        std::shared_ptr<ModuleConfig> Config() { return m_config; }
+        std::shared_ptr<ConfigModule> Config() { return m_config; }
 
         ///\brief Get name of the module - configurable object
         std::string Name() const { return m_config->Name(); }
@@ -42,10 +42,10 @@ class Configurable {
         std::vector<std::string> m_units;
 
         ///\brief Pointer to the actual Configuration object being created for a given model.
-        std::shared_ptr<ModuleConfig> m_config;
+        std::shared_ptr<ConfigModule> m_config;
 
         ///\brief Raw pointer to the global configuration service (singleton object).
-        ConfigSvc* configSvc;
+        ConfigSvc* m_configSvc;
     };
 
 #endif //CONFIGSVC_CONFIGURABLE_HH

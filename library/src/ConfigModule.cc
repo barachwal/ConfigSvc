@@ -2,20 +2,20 @@
 // Created by brachwal on 22.03.2020.
 //
 
-#include "ModuleConfig.hh"
+#include "ConfigModule.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-bool ModuleConfig::IsDefined(const std::string& unit) const {
+bool ConfigModule::IsDefined(const std::string& unit) const {
     return m_unit.find(unit) != m_unit.end() ? true : false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ModuleConfig::SetValue(const std::string& unit, std::any value) {
+void ConfigModule::SetValue(const std::string& unit, std::any value) {
     if (IsDefined(unit)) {
         if (m_unit[unit].type() != value.type()) {
-            throw std::invalid_argument("ModuleConfig::SetValue::"
+            throw std::invalid_argument("ConfigModule::SetValue::"
                                         "Module( " +m_name+ " ): "
                                         "Given unit ("+unit+") is of wrong type value");
         } else {
@@ -31,11 +31,11 @@ void ModuleConfig::SetValue(const std::string& unit, std::any value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-std::any ModuleConfig::GetValue(const std::string& unit) const {
+std::any ConfigModule::GetValue(const std::string& unit) const {
     if (IsDefined(unit)) {
         return m_unit.at(unit);
     } else {
-        throw std::invalid_argument("ModuleConfig::GetValue::"
+        throw std::invalid_argument("ConfigModule::GetValue::"
                                     "Module( " + m_name + " ): "
                                     "Given unit (" + unit + ") is not defined.");
     }
@@ -43,7 +43,7 @@ std::any ModuleConfig::GetValue(const std::string& unit) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-bool ModuleConfig::GetStatus() const {
+bool ConfigModule::GetStatus() const {
     for (auto status : m_status) {
         if (status.second) return true;  // if any of the parameter is modified
     }
@@ -52,11 +52,11 @@ bool ModuleConfig::GetStatus() const {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-bool ModuleConfig::GetStatus(const std::string& unit) const {
+bool ConfigModule::GetStatus(const std::string& unit) const {
     if (IsDefined(unit)) {
         return m_status.at(unit);
     } else {
-        throw std::invalid_argument("ModuleConfig::GetValue::"
+        throw std::invalid_argument("ConfigModule::GetValue::"
                                     "Module( " + m_name + " ): "
                                     "Given unit (" + unit + ") is not defined.");
     }
@@ -64,7 +64,7 @@ bool ModuleConfig::GetStatus(const std::string& unit) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ModuleConfig::SetStatus(bool status_new) {
+void ConfigModule::SetStatus(bool status_new) {
     for (auto status : m_status) {
         status.second = status_new;
     }
