@@ -7,6 +7,7 @@
 
 #include <any>
 #include <map>
+#include  <stdexcept>
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -26,6 +27,9 @@ class ModuleConfig {
         /// true: changed
         std::map<std::string, bool> m_status;
 
+        /// \brief Get value for a single unit
+        std::any GetValue(const std::string& unit) const;
+
     public:
         ///
         ModuleConfig() = default;
@@ -37,20 +41,17 @@ class ModuleConfig {
         ~ModuleConfig() = default;
 
         /// \brief Check if the specified unit already exists in Configuration instance.
-        bool IsDefined(const std::string& unit);
+        bool IsDefined(const std::string& unit) const;
 
         /// \brief Set value for a single unit
         void SetValue(const std::string& unit, std::any value);
 
-        /// \brief Get value for a single unit
-        std::any GetValue(const std::string& unit);
-
         /// \brief Check the global status of a given module configuration
         /// Whether it's different from the default configuration.
-        bool GetStatus();
+        bool GetStatus() const;
 
         /// \brief Check the unit-like status of a given module configuration.
-        bool GetStatus(const std::string& unit);
+        bool GetStatus(const std::string& unit) const;
 
         /// \brief Change global status for the given module.
         void SetStatus(bool status_new);
@@ -59,7 +60,7 @@ class ModuleConfig {
         std::string Name() const { return m_name; }
 
         ///\brief The direct method for getting the actual value of the particular unit.
-        template <typename T> T GetValue(const std::string& unit) {
+        template <typename T> T GetValue(const std::string& unit) const {
             return std::any_cast<T>(GetValue(unit));
         }
 

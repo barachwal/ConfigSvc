@@ -3,11 +3,10 @@
 //
 
 #include "ModuleConfig.hh"
-#include  <stdexcept>
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-bool ModuleConfig::IsDefined(const std::string& unit) {
+bool ModuleConfig::IsDefined(const std::string& unit) const {
     return m_unit.find(unit) != m_unit.end() ? true : false;
 }
 
@@ -32,7 +31,7 @@ void ModuleConfig::SetValue(const std::string& unit, std::any value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-std::any ModuleConfig::GetValue(const std::string& unit) {
+std::any ModuleConfig::GetValue(const std::string& unit) const {
     if (IsDefined(unit)) {
         return m_unit.at(unit);
     } else {
@@ -44,7 +43,7 @@ std::any ModuleConfig::GetValue(const std::string& unit) {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-bool ModuleConfig::GetStatus() {
+bool ModuleConfig::GetStatus() const {
     for (auto status : m_status) {
         if (status.second) return true;  // if any of the parameter is modified
     }
@@ -53,7 +52,7 @@ bool ModuleConfig::GetStatus() {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-bool ModuleConfig::GetStatus(const std::string& unit) {
+bool ModuleConfig::GetStatus(const std::string& unit) const {
     if (IsDefined(unit)) {
         return m_status.at(unit);
     } else {
