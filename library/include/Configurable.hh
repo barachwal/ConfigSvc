@@ -5,7 +5,6 @@
 #ifndef CONFIGSVC_CONFIGURABLE_HH
 #define CONFIGSVC_CONFIGURABLE_HH
 
-#include <vector>
 #include <memory>
 #include "ConfigModule.hh"
 
@@ -13,19 +12,21 @@ class ConfigSvc;
 
 ///\class Configurable
 ///\brief The base abstract class for any object that is expected to be configurable.
-class Configurable {
+class Configurable : public std::enable_shared_from_this<Configurable> {
+    private:
+
     protected:
         ///
-        Configurable();
+        Configurable() = delete;
 
         ///
-        Configurable(const std::string& name);
+        explicit Configurable(const std::string& name);
 
         ///
         virtual ~Configurable() = default;
 
-        ///\brief List of units(parameters) constituting given module.
-        std::vector<std::string> m_units;
+        /// Simple wrapper to  ConfigModule::DefineUnit
+        template <typename T> void DefineUnit(const std::string&);
 
         ///\brief Pointer to the actual Configuration object being created for a given model.
         std::shared_ptr<ConfigModule> m_config;
@@ -45,9 +46,9 @@ class Configurable {
         ///     m_units.emplace_back("UnitParameter3");
         ///     m_units.emplace_back("UnitParameter4");
         ///     ...
-        ///     for (const auto& unit : m_units)
-        ///          DefaultConfig(unit);   // setup the default configuration for all defined units/parameters
-        ///     m_configSvc->Register(GetName(), this); // register this module to the main service
+        ///     // The following have to be called from here!
+        ///     Configurable::DefaultConfig();   // setup the default configuration for all defined units/parameters
+        ///     Configurable::Register();        // register this module int the main service
         /// }
 
         ///\brief Pure virtual method for implementing the default set of values for all units of given module.
@@ -71,15 +72,18 @@ class Configurable {
         ///     }
         /// }
 
-        ///\brief Get pointer to the actual Configuration object being created for a given model.
+        ///\brief Call default configuration for all defined units
+        void DefaultConfig();
+
+        /// /// Simple wrapper to  ConfigModule::DefineUnit
+        void PrintConfig() const { m_config->Print(); }
+
+        ///\brief Get pointer to the actual Configuration object being created for a given module.
         std::shared_ptr<ConfigModule> Config() { return m_config; }
+};
 
-        ///\brief Get name of the module - configurable object
-        std::string GetName() const { return m_config->GetName(); }
-
-        ///\brief Get name of the module - configurable object
-        void SetName(const std::string& name ) { return m_config->SetName(name); }
-
-    };
+template <typename T> void Configurable::DefineUnit(const std::string& unit){
+    m_config->DefineUnit<T>(unit);
+}
 
 #endif //CONFIGSVC_CONFIGURABLE_HH

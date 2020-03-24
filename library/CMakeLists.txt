@@ -8,15 +8,15 @@ set(SOURCES_DIR ${PROJECT_SOURCE_DIR}/src)
 
 include_directories(${HEADERS_DIR})
 
-set(SOURCES ${SOURCES_DIR}/ConfigModule.cc
-            ${SOURCES_DIR}/Configurable.cc
-            ${SOURCES_DIR}/ConfigSvc.cc)
+set(SOURCES ${SOURCES_DIR}/ConfigModule.cpp
+            ${SOURCES_DIR}/Configurable.cpp
+            ${SOURCES_DIR}/ConfigSvc.cpp)
 
 # This needs to be done universally to any static library
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # Define the library
-add_library(${PROJECT_NAME} STATIC ${SOURCES} )
+add_library(${PROJECT_NAME} STATIC ${HEADERS} ${SOURCES} )
 
 # Expose project's public includes to other subprojects through cache variable.
 set(${PROJECT_NAME}_INCLUDE_DIR ${HEADERS_DIR} CACHE INTERNAL "${PROJECT_NAME}: Include Directories" FORCE)

@@ -2,6 +2,7 @@
 // Created by brachwal on 23.03.2020.
 //
 
+#include <iostream>
 #include "ConfigSvc.hh"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -61,8 +62,9 @@ bool ConfigSvc::GetStatus(const std::string& module, const std::string& unit) co
 void ConfigSvc::Register(const std::string& module, std::shared_ptr<Configurable> config_volume) {
     if (IsRegistered(module)) {
         // Each module name should be unique
-        throw std::logic_error("ConfigSvc::Register:: Module( " + module + " ) is already registered.");
+        throw std::logic_error("ConfigSvc::Register:: Module( \"" + module + "\" ) is already registered.");
     } else {
+        std::cout << "[ConfigSvc]::  Register new module : \"" << module <<"\""<< std::endl;
         m_config_modules.insert(make_pair(module, config_volume));
     }
 }
@@ -81,5 +83,16 @@ void ConfigSvc::SetDefault(const std::string& module, const std::string& unit) {
         m_config_modules.at(module)->DefaultConfig(unit);
     } else {
         throw std::invalid_argument("ConfigSvc::GetStatus:: Module( " + module + " ) is not registered.");
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+std::shared_ptr<ConfigModule> ConfigSvc::GetConfigModule(const std::string& module){
+    if (IsRegistered(module)) {
+        return m_config_modules.at(module)->Config();
+    }
+    else {
+        throw std::logic_error("ConfigSvc::GetConfigModule:: Module( \"" + module + "\" ) is not registered.");
     }
 }
