@@ -26,10 +26,10 @@ void ConfigModule::SetValue(const std::string& unit, std::any value) {
                                         "Module( "+m_name+" ): Given unit ("+unit+") is of wrong type value");
         } else {
             m_units.at(unit) = value;
-            if(m_status_of_units_initialisation.at(unit)) // check if this unit was initialised to default value
-                m_status_of_units.at(unit) = true;
+            if(IsInitialized(unit)) // check if this unit was initialised to default value
+                SetStatus(unit,true);
             else
-                m_status_of_units_initialisation.at(unit) = true;
+                SetInitializationStatus(unit,true); // assume first call of SetValue by the default configuration
         }
     } else {
         throw std::invalid_argument("ConfigModule::SetValue::"
@@ -72,15 +72,48 @@ bool ConfigModule::GetStatus(const std::string& unit) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ConfigModule::SetStatus(bool status_new) {
-    for (auto status : m_status_of_units) {
-        status.second = status_new;
+void ConfigModule::SetStatus(const std::string& unit, bool status) {
+    if (IsUnitDefined(unit)) {
+        m_status_of_units[unit] = status;
+    } else {
+        throw std::invalid_argument("ConfigModule::SetStatus::"
+                                    "Module( " + m_name + " ): Given unit (" + unit + ") is not defined.");
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-std::vector<std::string> ConfigModule::GetUnitsNames(){
+void ConfigModule::SetInitializationStatus(const std::string& unit, bool status){
+    if (IsUnitDefined(unit)) {
+        m_status_of_units_initialisation.at(unit) = status;
+    } else {
+        throw std::invalid_argument("ConfigModule::SetInitializationStatus::"
+                                    "Module( " + m_name + " ): Given unit (" + unit + ") is not defined.");
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+bool ConfigModule::IsInitialized(const std::string& unit) const {
+    if (IsUnitDefined(unit)) {
+        return m_status_of_units_initialisation.at(unit);
+    } else {
+        throw std::invalid_argument("ConfigModule::IsInitialized::"
+                                    "Module( " + m_name + " ): Given unit (" + unit + ") is not defined.");
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+bool ConfigModule::IsInitialized() const {
+    for(const auto& unit : m_status_of_units_initialisation)
+        if (!unit.second) return false;
+    return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+std::vector<std::string> ConfigModule::GetUnitsNames() const {
     std::vector<std::string> names;
     for(const auto& unit : m_units){
         names.emplace_back(unit.first);

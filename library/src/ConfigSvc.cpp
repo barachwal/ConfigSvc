@@ -30,15 +30,6 @@ void ConfigSvc::SetValue(const std::string& module, const std::string& unit, std
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ConfigSvc::SetStatus(const std::string& module, bool status) {
-    if (IsRegistered(module)) {
-        return m_config_modules[module]->Config()->SetStatus(status);
-    } else {
-        throw std::invalid_argument("ConfigSvc::SetValue:: Module( " + module + " ) is not registered.");
-    }
-}
-////////////////////////////////////////////////////////////////////////////////
-///
 bool ConfigSvc::GetStatus(const std::string& module) const {
     if (IsRegistered(module)) {
         return m_config_modules.at(module)->Config()->GetStatus();

@@ -13,8 +13,8 @@
 ///\class ConfigSvc
 ///\brief The main configuration service to manage the desired system configurable.
 /// It is a singleton like pattern
-// TODO:: przekierowanie ostream
-
+// TODO:: Make std::ostream flexibility
+// TODO:: Add DefaultConfig completeness test
 class ConfigSvc {
     private:
         ///
@@ -47,9 +47,6 @@ class ConfigSvc {
 
         ///\brief The wrapper of the Configuration::GetStatus
         bool GetStatus(const std::string& module, const std::string& unit) const;
-
-        ///\brief The wrapper of the Configuration::SetStatus
-        void SetStatus(const std::string& module, bool status);
 
         ///\brief Register new module configuraiton in the main service.
         void Register(const std::string& module, std::shared_ptr<Configurable>);

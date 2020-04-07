@@ -10,10 +10,12 @@
 #include <string>
 #include <any>
 #include <map>
+#include <tuple>
 #include <vector>
 #include <unordered_map>
 #include <stdexcept>
 
+class Configurable;
 ////////////////////////////////////////////////////////////////////////////////
 ///
 ///\class Configuration
@@ -27,8 +29,15 @@ class ConfigModule {
         /// \brief Unit and its value mapping
         std::map<std::string, std::any> m_units;
 
-        /// Store for each unit its type
+        /// \brief Store for each unit its type
         std::unordered_map<std::type_index, void(*)(std::any const&, std::ostream&)> m_unit_streamers;
+
+        /// \brief Store for keep track series of status flag (easly extensible)
+        /// vector[0] - configuration status: false: unchanged (default value)
+        ///                                    true: changed   (modified from default)
+        /// vector[1] - unit initialisation status
+        /// vector[2] - unit global scope status (is it private or not)
+        std::map<std::string, std::vector<bool>> m_unit_status;
 
         /// \brief Status of the configuration.
         /// false: unchanged (default value)
@@ -41,7 +50,29 @@ class ConfigModule {
         /// \brief Get value for a single unit
         std::any GetValue(const std::string& unit) const;
 
+        ///
         template<class T> void AddUnitStreamer();
+
+        ///
+        void SetGlobalScope(const std::string& unit, bool value){}
+
+        ///
+        void IsGlobal(const std::string& unit){}
+
+        /// \brief Change status of the current value for specific unit the given module.
+        void SetStatus(const std::string& unit, bool status);
+
+        /// \brief Change status of the value initialization for specific unit for the given module.
+        void SetInitializationStatus(const std::string& unit, bool status);
+
+        /// \brief Get status of the value initialization for specific unit for the given module.
+        bool IsInitialized(const std::string& unit) const;
+
+        /// \brief Get status of the value initialization for all units for the given module.
+        bool IsInitialized() const;
+
+        ///
+        friend class Configurable;
 
     public:
         ///
@@ -69,14 +100,11 @@ class ConfigModule {
         /// \brief Check the unit-like status of a given module configuration.
         bool GetStatus(const std::string& unit) const;
 
-        /// \brief Change global status for the given module.
-        void SetStatus(bool status_new);
-
         ///
         std::string GetName() const { return m_name; }
 
         ///
-        std::vector<std::string> GetUnitsNames();
+        std::vector<std::string> GetUnitsNames() const;
 
         ///
         void SetName(const std::string& name) { m_name=name; }
@@ -101,6 +129,7 @@ template <typename T> void ConfigModule::DefineUnit(const std::string& unit){
     m_units.insert(std::make_pair(unit,T()));
     m_status_of_units.insert(std::make_pair(unit,false));
     m_status_of_units_initialisation.insert(std::make_pair(unit,false));
+    m_unit_status.insert(std::make_pair(unit,std::vector<bool>{false,false,false}));
     AddUnitStreamer<T>();
 }
 
