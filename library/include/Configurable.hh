@@ -26,7 +26,7 @@ class Configurable : public std::enable_shared_from_this<Configurable> {
         virtual ~Configurable() = default;
 
         /// Simple wrapper to  ConfigModule::DefineUnit
-        template <typename T> void DefineUnit(const std::string&, bool isPrivate=false);
+        template <typename T> void DefineUnit(const std::string&, bool isPublic=true);
 
         ///\brief Pointer to the actual Configuration object being created for a given model.
         std::shared_ptr<ConfigModule> m_config;
@@ -81,9 +81,8 @@ class Configurable : public std::enable_shared_from_this<Configurable> {
         std::shared_ptr<ConfigModule> Config() { return m_config; }
 };
 
-template <typename T> void Configurable::DefineUnit(const std::string& unit, bool isPrivate){
-    m_config->DefineUnit<T>(unit);
-    m_config->SetGlobalScope(unit,isPrivate);
+template <typename T> void Configurable::DefineUnit(const std::string& unit, bool isPublic){
+    m_config->DefineUnit<T>(unit,isPublic);
 }
 
 #endif //CONFIGSVC_CONFIGURABLE_HH

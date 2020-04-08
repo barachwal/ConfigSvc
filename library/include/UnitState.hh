@@ -18,7 +18,7 @@ class UnitState {
         bool m_is_default_value = false;
 
         ///
-        bool m_is_private = false;
+        bool m_is_public = true;
 
         ///
         void IsInitialized(bool val) { m_is_initialized = val; }
@@ -27,7 +27,7 @@ class UnitState {
         void IsDefaultValue(bool val) { m_is_default_value = val; }
 
         ///
-        void IsPrivate(bool val) { m_is_private = val; }
+        void IsPublic(bool val) { m_is_public = val; }
 
         ///
         friend class ConfigModule;
@@ -46,7 +46,7 @@ class UnitState {
         bool IsDefaultValue() const { return m_is_default_value; }
 
         ///
-        bool IsPrivate() const { return m_is_private; }
+        bool IsPublic() const { return m_is_public; }
 };
 
 #endif //CONFIGSVC_UNITSTATE_HH

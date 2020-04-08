@@ -2,7 +2,6 @@
 // Created by brachwal on 22.03.2020.
 //
 
-#include <typeinfo>
 #include <iostream>
 #include "ConfigModule.hh"
 
@@ -21,19 +20,22 @@ bool ConfigModule::IsUnitDefined(const std::string& unit) const {
 ///
 void ConfigModule::SetValue(const std::string& unit, std::any value) {
     if (IsUnitDefined(unit)) {
-        if (m_units[unit].type() != value.type()) {
-            throw std::invalid_argument("ConfigModule::SetValue::"
-                                        "Module( "+m_name+" ): Given unit ("+unit+") is of wrong type value");
+        if(IsPublic(unit)){
+            if (m_units[unit].type() != value.type()) {
+                throw std::invalid_argument("ConfigModule::SetValue::"
+                                            "Module( " + m_name + " ): Given unit (" + unit +
+                                            ") is of wrong type value");
+            } else {
+                m_units.at(unit) = value;
+                UnitStateUpdate(unit);
+            }
         } else {
-            m_units.at(unit) = value;
-            if(IsInitialized(unit)) // check if this unit was initialised to default value
-                SetStatus(unit,true);
-            else
-                SetInitializationStatus(unit,true); // assume first call of SetValue by the default configuration
+            throw std::logic_error("ConfigModule::SetValue::"
+                                   "Module( \""+m_name+"\" ): Given unit ("+unit+") is read-only!!!");
         }
     } else {
         throw std::invalid_argument("ConfigModule::SetValue::"
-                                    "Module( "+m_name+" ): Given unit ("+unit+") is not defined");
+                                    "Module( \""+m_name+"\" ): Given unit ("+unit+") is not defined");
     }
 }
 
@@ -52,8 +54,9 @@ std::any ConfigModule::GetValue(const std::string& unit) const {
 ////////////////////////////////////////////////////////////////////////////////
 ///
 bool ConfigModule::GetStatus() const {
-    for (auto status : m_status_of_units) {
-        if (status.second) return true;  // if any of the parameter is modified
+    for (auto status : m_units_state) {
+        // if any of the parameter is modified
+        if (!status.second.IsDefaultValue()) return true;
     }
     return false;
 }
@@ -62,53 +65,12 @@ bool ConfigModule::GetStatus() const {
 ///
 bool ConfigModule::GetStatus(const std::string& unit) const {
     if (IsUnitDefined(unit)) {
-        return m_status_of_units.at(unit);
+        return m_units_state.at(unit).IsDefaultValue();
     } else {
         throw std::invalid_argument("ConfigModule::GetValue::"
                                     "Module( " + m_name + " ): "
                                     "Given unit (" + unit + ") is not defined.");
     }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-void ConfigModule::SetStatus(const std::string& unit, bool status) {
-    if (IsUnitDefined(unit)) {
-        m_status_of_units[unit] = status;
-    } else {
-        throw std::invalid_argument("ConfigModule::SetStatus::"
-                                    "Module( " + m_name + " ): Given unit (" + unit + ") is not defined.");
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-void ConfigModule::SetInitializationStatus(const std::string& unit, bool status){
-    if (IsUnitDefined(unit)) {
-        m_status_of_units_initialisation.at(unit) = status;
-    } else {
-        throw std::invalid_argument("ConfigModule::SetInitializationStatus::"
-                                    "Module( " + m_name + " ): Given unit (" + unit + ") is not defined.");
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-bool ConfigModule::IsInitialized(const std::string& unit) const {
-    if (IsUnitDefined(unit)) {
-        return m_status_of_units_initialisation.at(unit);
-    } else {
-        throw std::invalid_argument("ConfigModule::IsInitialized::"
-                                    "Module( " + m_name + " ): Given unit (" + unit + ") is not defined.");
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
-bool ConfigModule::IsInitialized() const {
-    for(const auto& unit : m_status_of_units_initialisation)
-        if (!unit.second) return false;
-    return true;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,13 +90,42 @@ void ConfigModule::Print() const {
     for(const auto& unit : m_units){
         std::cout << "[ConfigModule]:: " << unit.first << " = ";
         m_unit_streamers.at(unit.second.type())(unit.second, std::cout);
-        m_status_of_units.at(unit.first) ? std::cout << "\t[modified]" : std::cout << "\t[default]";
+        m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "\t[modified]" : std::cout << "\t[default]";
         std::cout<<std::endl;
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ConfigModule::SetGlobalScope(const std::string& unit, bool value){
+bool ConfigModule::IsPublic(const std::string& unit) const {
+    if (IsUnitDefined(unit)) {
+        return m_units_state.at(unit).IsPublic();
+    } else {
+        throw std::invalid_argument("ConfigModule::IsPublic::"
+                                    "Module( " + m_name + " ): Given unit (" + unit + ") is not defined.");
+    }
+}
 
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigModule::UnitStateUpdate(const std::string& unit){
+    if (IsUnitDefined(unit)) {
+        // check if this unit was initialised to default value
+        if (!m_units_state.at(unit).IsInitialized()) {
+            // after first call of this method the unit is assumed being initialized
+            m_units_state.at(unit).IsInitialized(true);
+            // assume first call of this method by the default configuration process
+            m_units_state.at(unit).IsDefaultValue(true);
+        } else {
+            m_units_state.at(unit).IsDefaultValue(false);
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+bool ConfigModule::IsInitialized() const {
+    for(const auto& unit : m_units_state)
+        if (!unit.second.IsInitialized()) return false;
+    return true;
 }
