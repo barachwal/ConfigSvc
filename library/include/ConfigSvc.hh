@@ -14,7 +14,6 @@
 ///\brief The main configuration service to manage the desired system configurable.
 /// It is a singleton like pattern
 // TODO:: Make std::ostream flexibility
-// TODO:: Define simple ArgumentExeption and LogicExeption for given module and defaulted unit name as null
 class ConfigSvc {
     private:
         ///
@@ -31,16 +30,19 @@ class ConfigSvc {
 
         ///\brief Module name and pointer to actual module mapping.
         std::map<std::string, std::shared_ptr<Configurable>> m_config_modules;
+
+        ///
+        static void NOT_REGISTERED_MODULE_ERROR(const std::string& caller,const std::string& module);
     
     public:
         ///\brief Static method to get instance of this singleton object.
         static ConfigSvc* GetInstance();
 
         ///
-        static void LOGIC_ERROR();
+        static void LOGIC_ERROR(const std::string& caller, const std::string& module, const std::string& message);
 
         ///
-        static void ARGUMENT_ERROR();
+        static void ARGUMENT_ERROR(const std::string& caller, const std::string& module, const std::string& message);
 
         ///\brief The main comunication method for changing the actual value of the particular unit of a given module.
         void SetValue(const std::string& module, const std::string& unit, std::any value);
@@ -73,10 +75,9 @@ class ConfigSvc {
 };
 
 template <typename T> T ConfigSvc::GetValue(const std::string& module, const std::string& unit) const {
-    if (IsRegistered(module)) {
+    if (IsRegistered(module))
         return m_config_modules.at(module)->Config()->GetValue<T>(unit);
-    } else {
-        throw std::invalid_argument("ConfigSvc::GetValue:: Module( " + module + " ) is not defined.");
-    }
+    else
+        ConfigSvc::ARGUMENT_ERROR("ConfigSvc::GetValue",module,"is not defined.");
 }
 #endif //CONFIGSVC_CONFIGSVC_HH

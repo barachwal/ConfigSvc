@@ -21,9 +21,7 @@ Configurable::Configurable(const std::string& name):m_config(std::make_shared<Co
 void Configurable::DefaultConfig(){
     auto units = m_config->GetUnitsNames();
     for (const auto& unit : units) DefaultConfig(unit);
-    if(!m_config->IsInitialized()){
-        throw std::logic_error("Configurable::DefaultConfig: Module( \"" + m_config->GetName() + "\" ): "
-                                    " is not fully initialized!");
-    }
+    if(!m_config->IsInitialized())
+        ConfigSvc::LOGIC_ERROR("Configurable::DefaultConfig",m_config->GetName(),"is not fully initialized!");
 }
 

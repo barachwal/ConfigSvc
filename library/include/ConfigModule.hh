@@ -53,6 +53,9 @@ class ConfigModule {
         bool IsInitialized() const;
 
         ///
+        static void NOT_DEFINED_UNIT_ERROR(const std::string& module, const std::string& unit);
+
+        ///
         friend class Configurable;
 
     public:
@@ -101,6 +104,7 @@ template <typename T> T ConfigModule::GetValue(const std::string& unit) const {
     if (IsUnitDefined(unit)) {
         return std::any_cast<T>(GetValue(unit));
     } else {
+        // can't use here ConfigSvc::ARGUMENT_ERROR (circular dependency)
         throw std::invalid_argument("ConfigModule::GetValue:: "
                                     "Module( " + m_name + " ): Given unit (" + unit + ") is not defined.");
     }

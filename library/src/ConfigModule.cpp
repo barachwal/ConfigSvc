@@ -4,11 +4,11 @@
 
 #include <iostream>
 #include "ConfigModule.hh"
+#include "ConfigSvc.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 ConfigModule::ConfigModule(const std::string& name): m_name(name){}
-
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -21,34 +21,24 @@ bool ConfigModule::IsUnitDefined(const std::string& unit) const {
 void ConfigModule::SetValue(const std::string& unit, std::any value) {
     if (IsUnitDefined(unit)) {
         if(IsPublic(unit)){
-            if (m_units[unit].type() != value.type()) {
-                throw std::invalid_argument("ConfigModule::SetValue::"
-                                            "Module( " + m_name + " ): Given unit (" + unit +
-                                            ") is of wrong type value");
-            } else {
+            if (m_units[unit].type() == value.type()) {
                 m_units.at(unit) = value;
                 UnitStateUpdate(unit);
-            }
-        } else {
-            throw std::logic_error("ConfigModule::SetValue::"
-                                   "Module( \""+m_name+"\" ): Given unit ("+unit+") is read-only!!!");
-        }
-    } else {
-        throw std::invalid_argument("ConfigModule::SetValue::"
-                                    "Module( \""+m_name+"\" ): Given unit ("+unit+") is not defined");
-    }
+            } else
+                ConfigSvc::ARGUMENT_ERROR("ConfigModule::SetValue",m_name,"Given unit (\""+ unit+"\" is of wrong type value");
+        } else
+            ConfigSvc::LOGIC_ERROR("ConfigModule::SetValue",m_name,"Given unit ("+ unit+") is read-only!!!");
+    } else
+        ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 std::any ConfigModule::GetValue(const std::string& unit) const {
-    if (IsUnitDefined(unit)) {
+    if (IsUnitDefined(unit))
         return m_units.at(unit);
-    } else {
-        throw std::invalid_argument("ConfigModule::GetValue::"
-                                    "Module( " + m_name + " ): "
-                                    "Given unit (" + unit + ") is not defined.");
-    }
+    else
+        ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,22 +54,18 @@ bool ConfigModule::GetStatus() const {
 ////////////////////////////////////////////////////////////////////////////////
 ///
 bool ConfigModule::GetStatus(const std::string& unit) const {
-    if (IsUnitDefined(unit)) {
+    if (IsUnitDefined(unit))
         return m_units_state.at(unit).IsDefaultValue();
-    } else {
-        throw std::invalid_argument("ConfigModule::GetValue::"
-                                    "Module( " + m_name + " ): "
-                                    "Given unit (" + unit + ") is not defined.");
-    }
+    else
+        ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 std::vector<std::string> ConfigModule::GetUnitsNames() const {
     std::vector<std::string> names;
-    for(const auto& unit : m_units){
+    for(const auto& unit : m_units)
         names.emplace_back(unit.first);
-    }
     return names;
 }
 
@@ -98,12 +84,10 @@ void ConfigModule::Print() const {
 ////////////////////////////////////////////////////////////////////////////////
 ///
 bool ConfigModule::IsPublic(const std::string& unit) const {
-    if (IsUnitDefined(unit)) {
+    if (IsUnitDefined(unit))
         return m_units_state.at(unit).IsPublic();
-    } else {
-        throw std::invalid_argument("ConfigModule::IsPublic::"
-                                    "Module( " + m_name + " ): Given unit (" + unit + ") is not defined.");
-    }
+    else
+        ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -128,4 +112,10 @@ bool ConfigModule::IsInitialized() const {
     for(const auto& unit : m_units_state)
         if (!unit.second.IsInitialized()) return false;
     return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigModule::NOT_DEFINED_UNIT_ERROR(const std::string& module, const std::string& unit){
+    ConfigSvc::ARGUMENT_ERROR("ConfigModule::IsPublic",module,"Given unit (" + unit + ") is not defined.");
 }
