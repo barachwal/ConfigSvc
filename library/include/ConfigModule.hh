@@ -14,8 +14,10 @@
 #include <vector>
 #include <unordered_map>
 #include <stdexcept>
+#include "UnitState.hh"
 
 class Configurable;
+
 ////////////////////////////////////////////////////////////////////////////////
 ///
 ///\class Configuration
@@ -37,7 +39,7 @@ class ConfigModule {
         ///                                    true: changed   (modified from default)
         /// vector[1] - unit initialisation status
         /// vector[2] - unit global scope status (is it private or not)
-        std::map<std::string, std::vector<bool>> m_unit_status;
+        std::map<std::string, UnitState> m_unit_status;
 
         /// \brief Status of the configuration.
         /// false: unchanged (default value)
@@ -54,7 +56,7 @@ class ConfigModule {
         template<class T> void AddUnitStreamer();
 
         ///
-        void SetGlobalScope(const std::string& unit, bool value){}
+        void SetGlobalScope(const std::string& unit, bool value);
 
         ///
         void IsGlobal(const std::string& unit){}
@@ -129,7 +131,7 @@ template <typename T> void ConfigModule::DefineUnit(const std::string& unit){
     m_units.insert(std::make_pair(unit,T()));
     m_status_of_units.insert(std::make_pair(unit,false));
     m_status_of_units_initialisation.insert(std::make_pair(unit,false));
-    m_unit_status.insert(std::make_pair(unit,std::vector<bool>{false,false,false}));
+    m_unit_status.insert(std::make_pair(unit,UnitState()));
     AddUnitStreamer<T>();
 }
 

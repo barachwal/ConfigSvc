@@ -132,3 +132,9 @@ void ConfigModule::Print() const {
         std::cout<<std::endl;
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigModule::SetGlobalScope(const std::string& unit, bool value){
+
+}

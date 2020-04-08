@@ -15,6 +15,7 @@
 /// It is a singleton like pattern
 // TODO:: Make std::ostream flexibility
 // TODO:: Add DefaultConfig completeness test
+// TODO:: Define simple ArgumentExeption and LogicExeption for given module and defaulted unit name as null
 class ConfigSvc {
     private:
         ///
