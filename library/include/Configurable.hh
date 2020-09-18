@@ -85,7 +85,9 @@ class Configurable : public std::enable_shared_from_this<Configurable> {
 };
 
 template <typename T> void Configurable::DefineUnit(const std::string& unit, bool isPublic){
-    m_config->DefineUnit<T>(unit,isPublic);
+    if(unit.compare("Name")!=0 && unit.compare("name")!=0){
+        m_config->DefineUnit<T>(unit,isPublic);
+    }
 }
 
 #endif //CONFIGSVC_CONFIGURABLE_HH
