@@ -34,3 +34,5 @@
 # Editors and build systems
 .idea/
 cmake-build-debug/
+cmake-build-release/
+build/

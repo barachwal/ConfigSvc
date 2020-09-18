@@ -44,6 +44,9 @@ class ConfigSvc {
         ///
         static void ARGUMENT_ERROR(const std::string& caller, const std::string& module, const std::string& message);
 
+        ///
+        static void WARNING(const std::string& caller, const std::string& module, const std::string& message);
+
         ///\brief The main comunication method for changing the actual value of the particular unit of a given module.
         void SetValue(const std::string& module, const std::string& unit, std::any value);
 
@@ -76,7 +79,7 @@ class ConfigSvc {
 
 template <typename T> T ConfigSvc::GetValue(const std::string& module, const std::string& unit) const {
     if (IsRegistered(module))
-        return m_config_modules.at(module)->Config()->GetValue<T>(unit);
+        return m_config_modules.at(module)->thisConfig()->GetValue<T>(unit);
     else
         ConfigSvc::ARGUMENT_ERROR("ConfigSvc::GetValue",module,"is not defined.");
 }
