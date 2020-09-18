@@ -32,6 +32,12 @@ void ConfigSvc::NOT_REGISTERED_MODULE_ERROR(const std::string& caller, const std
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
+void ConfigSvc::WARNING(const std::string& caller, const std::string& module, const std::string& message){
+    std::cout << "[WARNING]:: "<<caller+": Module \""+module+"\": "<< message << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
 bool ConfigSvc::IsRegistered(const std::string& module) const {
     return m_config_modules.find(module) != m_config_modules.end() ? true : false;
 }

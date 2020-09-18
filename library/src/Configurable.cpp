@@ -4,6 +4,7 @@
 
 #include "Configurable.hh"
 #include "ConfigSvc.hh"
+#include <algorithm>
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -20,7 +21,38 @@ Configurable::Configurable(const std::string& name):m_config(std::make_shared<Co
 ///
 void Configurable::DefaultConfig(){
     auto units = m_config->GetUnitsNames();
-    for (const auto& unit : units) DefaultConfig(unit);
+    auto it = std::find (units.begin(), units.end(), "Label");
+    if (it != units.end()){
+        std::string message = "User's Configure implementation";
+        message+=" Doesn't have to include the DefineUnit<>(\"Label\")";
+        ConfigSvc::WARNING("Configurable::DefaultConfig",m_config->GetName(),message);
+    } else {
+        m_config->DefineUnit<std::string>("Label",true);
+    }
+
+    bool gotUsersLabel = false;
+    for (const auto& unit : units){
+        if(unit.compare("Name")!=0 && unit.compare("name")!=0){
+            DefaultConfig(unit);
+            if(unit.compare("Label")==0 || unit.compare("label")==0)
+                gotUsersLabel = true;
+        }
+        else {
+            std::string message = "User's DefaultConfig implementation";
+            message+=" shouldn't inlcude the \"Name\" unit.";
+            message+=" Consider usage of the \"Label\" instead";
+            message+=" (predefined by default with the \"Name\" of given module)";
+            ConfigSvc::WARNING("Configurable::DefaultConfig",m_config->GetName(),message);
+        }
+    }
+
+    if(!gotUsersLabel){
+        std::string message = "User's DefaultConfig doesn't inlcude \"Label\"";
+        message+=" it's being predefined with the \"Name\" of given module.";
+        ConfigSvc::WARNING("Configurable::DefaultConfig",m_config->GetName(),message);
+        m_config->SetValue("Label",Config()->GetName());
+    }
+
     if(!m_config->IsInitialized())
         ConfigSvc::LOGIC_ERROR("Configurable::DefaultConfig",m_config->GetName(),"is not fully initialized!");
 }
