@@ -14,20 +14,20 @@ Configurable::Configurable(const std::string& name):m_config(std::make_shared<Co
     // the instance when it goes out of scope. For this, you supply a lambda function
     // as a custom deleter that does nothing:
     auto wptr = std::shared_ptr<Configurable>( this, [](Configurable*){} );
-    m_configSvc->Register(Config()->GetName(), shared_from_this());
+    m_configSvc->Register(thisConfig()->GetName(), shared_from_this());
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 void Configurable::DefaultConfig(){
-    auto units = m_config->GetUnitsNames();
+    auto units = thisConfig()->GetUnitsNames();
     auto it = std::find (units.begin(), units.end(), "Label");
     if (it != units.end()){
         std::string message = "User's Configure implementation";
         message+=" Doesn't have to include the DefineUnit<>(\"Label\")";
-        ConfigSvc::WARNING("Configurable::DefaultConfig",m_config->GetName(),message);
+        ConfigSvc::WARNING("Configurable::DefaultConfig",thisConfig()->GetName(),message);
     } else {
-        m_config->DefineUnit<std::string>("Label",true);
+        thisConfig()->DefineUnit<std::string>("Label",true);
     }
 
     bool gotUsersLabel = false;
@@ -42,18 +42,18 @@ void Configurable::DefaultConfig(){
             message+=" shouldn't inlcude the \"Name\" unit.";
             message+=" Consider usage of the \"Label\" instead";
             message+=" (predefined by default with the \"Name\" of given module)";
-            ConfigSvc::WARNING("Configurable::DefaultConfig",m_config->GetName(),message);
+            ConfigSvc::WARNING("Configurable::DefaultConfig",thisConfig()->GetName(),message);
         }
     }
 
     if(!gotUsersLabel){
         std::string message = "User's DefaultConfig doesn't inlcude \"Label\"";
         message+=" it's being predefined with the \"Name\" of given module.";
-        ConfigSvc::WARNING("Configurable::DefaultConfig",m_config->GetName(),message);
-        m_config->SetValue("Label",Config()->GetName());
+        ConfigSvc::WARNING("Configurable::DefaultConfig",thisConfig()->GetName(),message);
+        thisConfig()->SetValue("Label",thisConfig()->GetName());
     }
 
-    if(!m_config->IsInitialized())
-        ConfigSvc::LOGIC_ERROR("Configurable::DefaultConfig",m_config->GetName(),"is not fully initialized!");
+    if(!thisConfig()->IsInitialized())
+        ConfigSvc::LOGIC_ERROR("Configurable::DefaultConfig",thisConfig()->GetName(),"is not fully initialized!");
 }
 

@@ -46,7 +46,7 @@ bool ConfigSvc::IsRegistered(const std::string& module) const {
 ///
 void ConfigSvc::SetValue(const std::string& module, const std::string& unit, std::any value) {
     if (IsRegistered(module))
-        return m_config_modules.at(module)->Config()->SetValue(unit, value);
+        return m_config_modules.at(module)->thisConfig()->SetValue(unit, value);
     else
         ConfigSvc::NOT_REGISTERED_MODULE_ERROR("ConfigSvc::SetValue",module);
 }
@@ -55,7 +55,7 @@ void ConfigSvc::SetValue(const std::string& module, const std::string& unit, std
 ///
 bool ConfigSvc::GetStatus(const std::string& module) const {
     if (IsRegistered(module))
-        return m_config_modules.at(module)->Config()->GetStatus();
+        return m_config_modules.at(module)->thisConfig()->GetStatus();
     else
         ConfigSvc::NOT_REGISTERED_MODULE_ERROR("ConfigSvc::GetStatus",module);
 }
@@ -64,7 +64,7 @@ bool ConfigSvc::GetStatus(const std::string& module) const {
 ///
 bool ConfigSvc::GetStatus(const std::string& module, const std::string& unit) const {
     if (IsRegistered(module))
-        return m_config_modules.at(module)->Config()->GetStatus(unit);
+        return m_config_modules.at(module)->thisConfig()->GetStatus(unit);
     else
         ConfigSvc::NOT_REGISTERED_MODULE_ERROR("ConfigSvc::GetStatus",module);
 }
@@ -101,7 +101,7 @@ void ConfigSvc::SetDefault(const std::string& module, const std::string& unit) {
 ///
 std::shared_ptr<ConfigModule> ConfigSvc::GetConfigModule(const std::string& module){
     if (IsRegistered(module))
-        return m_config_modules.at(module)->Config();
+        return m_config_modules.at(module)->thisConfig();
     else
         ConfigSvc::NOT_REGISTERED_MODULE_ERROR("ConfigSvc::GetStatus",module);
 }
