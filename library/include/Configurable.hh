@@ -79,6 +79,9 @@ class Configurable : public std::enable_shared_from_this<Configurable> {
 
         ///\brief Get pointer to the actual Configuration object being created for a given module.
         std::shared_ptr<ConfigModule> thisConfig() { return m_config; }
+
+        ///
+        ConfigSvc* configSvc() const { return m_configSvc; }
 };
 
 template <typename T> void Configurable::DefineUnit(const std::string& unit, bool isPublic){
