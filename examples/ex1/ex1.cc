@@ -18,6 +18,9 @@ public:
         Configurable::PrintConfig();
     }
     void DefaultConfig(const std::string& unit) override {
+        // if (unit.compare("Label") == 0) {
+        //     m_config->SetValue(unit, std::string("This is very nice car"));
+        // }
         if (unit.compare("Color") == 0) {
             m_config->SetValue(unit, std::string("White"));
         }

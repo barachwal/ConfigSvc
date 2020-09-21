@@ -35,10 +35,10 @@ void ConfigModule::SetValue(const std::string& unit, std::any value) {
 ////////////////////////////////////////////////////////////////////////////////
 ///
 std::any ConfigModule::GetValue(const std::string& unit) const {
-    if (IsUnitDefined(unit))
-        return m_units.at(unit);
-    else
+    if (!IsUnitDefined(unit))
         ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit);
+
+    return m_units.at(unit);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,10 +54,9 @@ bool ConfigModule::GetStatus() const {
 ////////////////////////////////////////////////////////////////////////////////
 ///
 bool ConfigModule::GetStatus(const std::string& unit) const {
-    if (IsUnitDefined(unit))
-        return m_units_state.at(unit).IsDefaultValue();
-    else
+    if (!IsUnitDefined(unit))
         ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit);
+    return m_units_state.at(unit).IsDefaultValue();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,7 +75,7 @@ void ConfigModule::Print() const {
     for(const auto& unit : m_units){
         std::cout << "[ConfigModule]:: " << unit.first << " = ";
         m_unit_streamers.at(unit.second.type())(unit.second, std::cout);
-        m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "\t[modified]" : std::cout << "\t[default]";
+        m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "\t[default]" : std::cout << "\t[modified]";
         std::cout<<std::endl;
     }
 }
@@ -84,10 +83,9 @@ void ConfigModule::Print() const {
 ////////////////////////////////////////////////////////////////////////////////
 ///
 bool ConfigModule::IsPublic(const std::string& unit) const {
-    if (IsUnitDefined(unit))
-        return m_units_state.at(unit).IsPublic();
-    else
+    if (!IsUnitDefined(unit))
         ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit);
+    return m_units_state.at(unit).IsPublic();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -112,6 +110,17 @@ bool ConfigModule::IsInitialized() const {
     for(const auto& unit : m_units_state)
         if (!unit.second.IsInitialized()) return false;
     return true;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+bool ConfigModule::IsInitialized(const std::string& unit) const {
+    if (IsUnitDefined(unit)) {
+        return m_units_state.at(unit).IsInitialized();
+    } else {
+       ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit); 
+    }
+    return false;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -51,6 +51,9 @@ class ConfigModule {
 
         /// \brief Get status of the value initialization for all units for the given module.
         bool IsInitialized() const;
+        
+        ///
+        bool IsInitialized(const std::string& unit) const;
 
         ///
         static void NOT_DEFINED_UNIT_ERROR(const std::string& module, const std::string& unit);
@@ -113,6 +116,7 @@ template <typename T> T ConfigModule::GetValue(const std::string& unit) const {
 template <typename T> void ConfigModule::DefineUnit(const std::string& unit, bool isPublic){
     m_units.insert(std::make_pair(unit,T()));
     m_units_state.insert(std::make_pair(unit,UnitState()));
+    m_units_state.at(unit).IsInitialized(false);
     if(isPublic) m_units_state.at(unit).IsPublic(isPublic);
     AddUnitStreamer<T>();
 }

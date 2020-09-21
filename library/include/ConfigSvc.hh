@@ -78,9 +78,9 @@ class ConfigSvc {
 };
 
 template <typename T> T ConfigSvc::GetValue(const std::string& module, const std::string& unit) const {
-    if (IsRegistered(module))
-        return m_config_modules.at(module)->thisConfig()->GetValue<T>(unit);
-    else
+    if (!IsRegistered(module))
         ConfigSvc::ARGUMENT_ERROR("ConfigSvc::GetValue",module,"is not defined.");
+    
+    return m_config_modules.at(module)->thisConfig()->GetValue<T>(unit);
 }
 #endif //CONFIGSVC_CONFIGSVC_HH

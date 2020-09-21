@@ -29,13 +29,10 @@ void Configurable::DefaultConfig(){
     } else {
         thisConfig()->DefineUnit<std::string>("Label",true);
     }
-
-    bool gotUsersLabel = false;
+    units = thisConfig()->GetUnitsNames();
     for (const auto& unit : units){
         if(unit.compare("Name")!=0 && unit.compare("name")!=0){
             DefaultConfig(unit);
-            if(unit.compare("Label")==0 || unit.compare("label")==0)
-                gotUsersLabel = true;
         }
         else {
             std::string message = "User's DefaultConfig implementation";
@@ -46,12 +43,15 @@ void Configurable::DefaultConfig(){
         }
     }
 
-    if(!gotUsersLabel){
+    if(!thisConfig()->IsInitialized("Label"))
+        thisConfig()->SetValue("Label",thisConfig()->GetName());
+
+    /*if(!gotUsersLabel){
         std::string message = "User's DefaultConfig doesn't inlcude \"Label\"";
         message+=" it's being predefined with the \"Name\" of given module.";
         ConfigSvc::WARNING("Configurable::DefaultConfig",thisConfig()->GetName(),message);
-        thisConfig()->SetValue("Label",thisConfig()->GetName());
-    }
+        
+    }*/
 
     if(!thisConfig()->IsInitialized())
         ConfigSvc::LOGIC_ERROR("Configurable::DefaultConfig",thisConfig()->GetName(),"is not fully initialized!");

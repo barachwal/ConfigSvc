@@ -15,7 +15,7 @@ class UnitState {
         bool m_is_initialized = false;
 
         ///
-        bool m_is_default_value = false;
+        bool m_is_default_value = true;
 
         ///
         bool m_is_public = true;
