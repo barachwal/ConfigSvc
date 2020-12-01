@@ -5,6 +5,7 @@
 #ifndef CONFIGSVC_CONFIGSVC_HH
 #define CONFIGSVC_CONFIGSVC_HH
 
+#include <cstdio>
 #include <memory>
 #include "Configurable.hh"
 
@@ -51,7 +52,7 @@ class ConfigSvc {
         void SetValue(const std::string& module, const std::string& unit, std::any value);
 
         ///\brief The main communication method for getting the actual value of the particular unit of a given module.
-        template <typename T> T GetValue(const std::string& module, const std::string& unit) const;
+        template <typename T> T GetValue(const std::string& module, const std::string& unit, const char* caller = __builtin_FUNCTION()) const;
 
         ///\brief The wrapper of the Configuration::GetStatus
         bool GetStatus(const std::string& module) const;
@@ -77,10 +78,11 @@ class ConfigSvc {
 
 };
 
-template <typename T> T ConfigSvc::GetValue(const std::string& module, const std::string& unit) const {
-    if (!IsRegistered(module))
-        ConfigSvc::ARGUMENT_ERROR("ConfigSvc::GetValue",module,"is not defined.");
-    
+template <typename T> T ConfigSvc::GetValue(const std::string& module, const std::string& unit, const char* caller) const {
+    if (!IsRegistered(module)){
+        auto callStack = static_cast<std::string>(caller)+"() -> ConfigSvc::GetValue";
+        ConfigSvc::ARGUMENT_ERROR(callStack,module,"is not defined.");
+    }
     return m_config_modules.at(module)->thisConfig()->GetValue<T>(unit);
 }
 #endif //CONFIGSVC_CONFIGSVC_HH
