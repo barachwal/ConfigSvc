@@ -40,19 +40,19 @@ void ConfigSvc::WARNING(const std::string& caller, const std::string& module, co
 ////////////////////////////////////////////////////////////////////////////////
 ///
 void ConfigSvc::WARNING(const std::string& message){
-    std::cout << "[ConfigSvc]"<< FYEL("[WARNING]")<<":: "<< message << std::endl;
+    std::cout << "[ConfigSvc]"<< FYEL("[WARNING]")<<"::"<< message << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 void ConfigSvc::ERROR(const std::string& message){
-    std::cout << "[ConfigSvc]"<< FRED("[ERROR]")<<":: "<< message << std::endl;
+    std::cout << "[ConfigSvc]"<< FRED("[ERROR]")<<"::"<< message << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 void ConfigSvc::INFO(const std::string& message){
-    std::cout << "[ConfigSvc]"<< FGRN("[INFO]")<<":: "<< message << std::endl;
+    std::cout << "[ConfigSvc]"<< FGRN("[INFO]")<<"::"<< message << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

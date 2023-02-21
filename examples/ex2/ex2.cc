@@ -15,7 +15,7 @@ public:
         DefineUnit<int>("SpareTireNumber");
 
         Configurable::DefaultConfig();   // setup the default configuration for all defined units/parameters
-        Configurable::PrintConfig();
+        // Configurable::PrintConfig();
     }
     void DefaultConfig(const std::string& unit) override {
         // if (unit.compare("Label") == 0) {
