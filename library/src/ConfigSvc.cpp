@@ -44,6 +44,12 @@ void ConfigSvc::WARNING(const std::string& message){
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
+void ConfigSvc::ERROR(const std::string& message){
+    std::cout << "[ConfigSvc]"<< FRED("[ERROR]")<<":: "<< message << std::endl;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
 void ConfigSvc::INFO(const std::string& message){
     std::cout << "[ConfigSvc]"<< FGRN("[INFO]")<<":: "<< message << std::endl;
 }

@@ -78,6 +78,9 @@ class ConfigSvc {
 
         ///
         static void WARNING(const std::string& message);
+
+        ///
+        static void ERROR(const std::string& message);
         
         ///
         static void INFO(const std::string& message);
