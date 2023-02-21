@@ -33,7 +33,7 @@ void ConfigSvc::NOT_REGISTERED_MODULE_ERROR(const std::string& caller, const std
 ////////////////////////////////////////////////////////////////////////////////
 ///
 void ConfigSvc::WARNING(const std::string& caller, const std::string& module, const std::string& message){
-    std::cout << "[WARNING]:: "<<caller+": Module \""+module+"\": "<< message << std::endl;
+    std::cout << "[ConfigSvc]"<< FYEL("[WARNING]")<<":: "<<caller+": Module \""+module+"\": "<< message << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +122,6 @@ void ConfigSvc::PrintTomlConfig() const{
         std::cout << toml::json_formatter{ m_toml_config } << "\n"; // re-serialize as JSON
     }
     else {
-        std::cout << "[ConfigSvc][WARNING]:: PrintTomlConfig : any file was parsed.."<< std::endl;
+        std::cout << "[ConfigSvc]"<<FYEL("[WARNING]")<<":: PrintTomlConfig : any file was parsed.."<< std::endl;
     }
 }
