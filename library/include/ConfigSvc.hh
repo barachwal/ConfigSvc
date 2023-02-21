@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <memory>
 #include "Configurable.hh"
+#include "toml.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -31,6 +32,12 @@ class ConfigSvc {
 
         ///\brief Module name and pointer to actual module mapping.
         std::map<std::string, std::shared_ptr<Configurable>> m_config_modules;
+
+        ///
+        toml::parse_result m_toml_config;
+
+        ///
+        bool m_toml = false;
 
         ///
         static void NOT_REGISTERED_MODULE_ERROR(const std::string& caller,const std::string& module);
@@ -75,6 +82,9 @@ class ConfigSvc {
 
         ///
         std::shared_ptr<ConfigModule> GetConfigModule(const std::string& module);
+
+        ///
+        toml::parse_result& ParseTomlFile(const std::string& file);
 
 };
 

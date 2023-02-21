@@ -105,3 +105,10 @@ std::shared_ptr<ConfigModule> ConfigSvc::GetConfigModule(const std::string& modu
 
     return m_config_modules.at(module)->thisConfig();
 }
+
+////////////////////////////////////////////////////////////////////////////////
+///
+toml::parse_result& ConfigSvc::ParseTomlFile(const std::string& file){
+    m_toml_config = toml::parse_file(file);
+    m_toml = true;
+}
