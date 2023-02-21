@@ -8,6 +8,7 @@
 #include <cstdio>
 #include <memory>
 #include "Configurable.hh"
+#include "toml.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -33,6 +34,12 @@ class ConfigSvc {
         std::map<std::string, std::shared_ptr<Configurable>> m_config_modules;
 
         ///
+        toml::parse_result m_toml_config;
+
+        ///
+        bool m_toml = false;
+
+        ///
         static void NOT_REGISTERED_MODULE_ERROR(const std::string& caller,const std::string& module);
     
     public:
@@ -47,6 +54,15 @@ class ConfigSvc {
 
         ///
         static void WARNING(const std::string& caller, const std::string& module, const std::string& message);
+
+        ///
+        static void WARNING(const std::string& message);
+
+        ///
+        static void ERROR(const std::string& message);
+        
+        ///
+        static void INFO(const std::string& message);
 
         ///\brief The main comunication method for changing the actual value of the particular unit of a given module.
         void SetValue(const std::string& module, const std::string& unit, std::any value);
@@ -76,6 +92,21 @@ class ConfigSvc {
         ///
         std::shared_ptr<ConfigModule> GetConfigModule(const std::string& module);
 
+        ///
+        toml::parse_result& ParseTomlFile(const std::string& file);
+
+        ///
+        void PrintTomlConfig() const;
+
+        ///
+        bool IsTomlParsed() const { return m_toml; }
+
+        ///
+        toml::parse_result* GetTomlConfig() { return &m_toml_config; }
+
+        ///
+        template <typename T> T GetTomlValue(const std::string& module, const std::string& unit, T&& none) const;
+
 };
 
 template <typename T> T ConfigSvc::GetValue(const std::string& module, const std::string& unit, const char* caller) const {
@@ -84,5 +115,12 @@ template <typename T> T ConfigSvc::GetValue(const std::string& module, const std
         ConfigSvc::ARGUMENT_ERROR(callStack,module,"is not defined.");
     }
     return m_config_modules.at(module)->thisConfig()->GetValue<T>(unit);
+}
+
+template <typename T> T ConfigSvc::GetTomlValue(const std::string& module, const std::string& unit, T&& none ) const {
+    if(m_toml){
+        return m_toml_config[module][unit].value_or<T>(std::move(none));
+    }
+    return none;
 }
 #endif //CONFIGSVC_CONFIGSVC_HH

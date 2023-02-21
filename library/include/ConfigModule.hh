@@ -8,6 +8,7 @@
 #include <ostream>
 #include <typeindex>
 #include <string>
+#include <sstream>
 #include <any>
 #include <map>
 #include <tuple>
@@ -15,6 +16,7 @@
 #include <unordered_map>
 #include <stdexcept>
 #include "UnitState.hh"
+#include "toml.hh"
 
 class Configurable;
 
@@ -36,6 +38,12 @@ class ConfigModule {
 
         /// \brief Store for keep track series of status flag
         std::map<std::string, UnitState> m_units_state;
+
+        ///
+        toml::parse_result* m_toml_config;
+
+        ///
+        bool m_toml = false;
 
         /// \brief Get value for a single unit
         std::any GetValue(const std::string& unit) const;
@@ -80,6 +88,9 @@ class ConfigModule {
         /// \brief Set value for a single unit
         void SetValue(const std::string& unit, std::any value);
 
+        /// \brief Check and set value from TOML file if it's loaded
+        template <typename T> void SetTValue(const std::string& unit, std::any value);
+
         /// \brief Check the global status of a given module configuration
         /// Whether it's different from the default configuration.
         bool GetStatus() const;
@@ -102,6 +113,21 @@ class ConfigModule {
         ///
         void Print() const;
 };
+#include <iostream>
+
+template <typename T> void ConfigModule::SetTValue(const std::string& unit, std::any value){
+    if(IsUnitDefined(unit) && IsPublic(unit) ){
+        if(!IsInitialized(unit))
+            SetValue(unit,value); // Set default value first
+        if(m_toml){
+            if((*m_toml_config)[m_name][unit].is_value()){  // found value in TOML file
+                auto toml_value = (*m_toml_config)[m_name][unit].value_or<T>(T()); 
+                SetValue(unit,toml_value); // Set again with new value
+            }
+
+        }
+    }
+}
 
 template <typename T> T ConfigModule::GetValue(const std::string& unit) const {
     if (IsUnitDefined(unit)) {

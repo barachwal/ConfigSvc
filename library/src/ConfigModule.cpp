@@ -5,10 +5,18 @@
 #include <iostream>
 #include "ConfigModule.hh"
 #include "ConfigSvc.hh"
+#include <iomanip>
+#include "colors.hh"
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-ConfigModule::ConfigModule(const std::string& name): m_name(name){}
+ConfigModule::ConfigModule(const std::string& name): m_name(name){
+    auto configSvc = ConfigSvc::GetInstance();
+    if (configSvc->IsTomlParsed()){
+        m_toml = true;
+        m_toml_config = configSvc->GetTomlConfig();
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -71,11 +79,11 @@ std::vector<std::string> ConfigModule::GetUnitsNames() const {
 ////////////////////////////////////////////////////////////////////////////////
 ///
 void ConfigModule::Print() const {
-    std::cout << "[ConfigModule]:: Configuration of the \"" << m_name << "\" module:" << std::endl;
+    ConfigSvc::INFO("[Module]::\""+m_name+"\" module configuration:");
     for(const auto& unit : m_units){
-        std::cout << "[ConfigModule]:: " << unit.first << " = ";
-        m_unit_streamers.at(unit.second.type())(unit.second, std::cout);
-        m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "\t[default]" : std::cout << "\t[modified]";
+        std::cout << FGRN("[INFO]")<<"::["<<m_name<<"]:: " << std::setw(20) << std::left << unit.first << "\t";
+        m_unit_streamers.at(unit.second.type())(unit.second, std::cout<<std::setw(20) << std::left);
+        m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "[default]" : std::cout << FYEL("[custom]");
         std::cout<<std::endl;
     }
 }
