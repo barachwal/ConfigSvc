@@ -22,15 +22,6 @@ class Configurable;
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-template <typename T> T convert_to (const std::string &str){
-    std::istringstream ss(str);
-    T num;
-    ss >> num;
-    return num;
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
 ///\class Configuration
 ///\brief The single module-like configuration class definition.
 ///The ConfigModule instance is intended to keep series of units and their value information.
@@ -128,16 +119,12 @@ class ConfigModule {
 #include <iostream>
 
 template <typename T> void ConfigModule::SetTValue(const std::string& unit, std::any value){
-    std::cout << "[DEBUG]:: ConfigModule::SetValue " << std::endl;
     if(IsUnitDefined(unit) && IsPublic(unit) ){
         if(!IsInitialized(unit))
             SetValue(unit,value); // Set default value first
         if(m_toml){
             if((*m_toml_config)[m_name][unit].is_value()){  // found value in TOML file
                 auto toml_value = (*m_toml_config)[m_name][unit].value_or<T>(T()); 
-                std::cout << "[DEBUG]:: ConfigModule::SetValue got for "<< unit <<" from toml: " << toml_value << std::endl;
-                //auto value_converted = convert_to<T>(value);
-                // std::cout << "[DEBUG]:: ConfigModule::SetValue covnerted: " << value << std::endl;
                 SetValue(unit,toml_value); // Set again with new value
             }
 

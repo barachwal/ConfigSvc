@@ -11,7 +11,7 @@ public:
     ~SuperCar() = default;
     void Configure() override {
         DefineUnit<std::string>("Color");
-        DefineUnit<char>("Type");
+        DefineUnit<std::string>("Type");
         DefineUnit<int>("SpareTireNumber");
 
         Configurable::DefaultConfig();   // setup the default configuration for all defined units/parameters
@@ -25,9 +25,9 @@ public:
             m_config->SetTValue<std::string>(unit, std::string("White"));
         }
         if (unit.compare("Type") == 0) {
-            m_config->SetValue(unit, char('C'));
+            m_config->SetTValue<std::string>(unit, std::string("C"));
         }
-        if (unit.compare("SpareTireNumber") == 0) {  // smart ptrs
+        if (unit.compare("SpareTireNumber") == 0) {
             m_config->SetTValue<int>(unit, int(2));
         }
     }
