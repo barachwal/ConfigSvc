@@ -33,7 +33,13 @@ void ConfigSvc::NOT_REGISTERED_MODULE_ERROR(const std::string& caller, const std
 ////////////////////////////////////////////////////////////////////////////////
 ///
 void ConfigSvc::WARNING(const std::string& caller, const std::string& module, const std::string& message){
-    std::cout << "[ConfigSvc]"<< FYEL("[WARNING]")<<":: "<<caller+": Module \""+module+"\": "<< message << std::endl;
+    ConfigSvc::WARNING(caller+": Module \""+module+"\": "+message);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigSvc::WARNING(const std::string& message){
+    std::cout << "[ConfigSvc]"<< FYEL("[WARNING]")<<":: "<< message << std::endl;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

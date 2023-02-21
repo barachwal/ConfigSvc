@@ -77,6 +77,9 @@ class ConfigSvc {
         static void WARNING(const std::string& caller, const std::string& module, const std::string& message);
 
         ///
+        static void WARNING(const std::string& message);
+        
+        ///
         static void INFO(const std::string& message);
 
         ///\brief The main comunication method for changing the actual value of the particular unit of a given module.
