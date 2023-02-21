@@ -91,9 +91,6 @@ class ConfigModule {
         /// \brief Check and set value from TOML file if it's loaded
         template <typename T> void SetTValue(const std::string& unit, std::any value);
 
-        /// \brief Set value from TOML file if it's loaded
-        void SetTomlValue(const std::string& unit);
-
         /// \brief Check the global status of a given module configuration
         /// Whether it's different from the default configuration.
         bool GetStatus() const;

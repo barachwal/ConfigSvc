@@ -42,15 +42,6 @@ void ConfigModule::SetValue(const std::string& unit, std::any value) {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ConfigModule::SetTomlValue(const std::string& unit) {
-    auto configSvc = ConfigSvc::GetInstance();
-    if(configSvc->IsTomlParsed()){
-        auto value = configSvc->GetTomlValue<std::string>(m_name,unit,std::string()); // we get everything as string
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////
-///
 std::any ConfigModule::GetValue(const std::string& unit) const {
     if (!IsUnitDefined(unit))
         ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit);
@@ -92,7 +83,7 @@ void ConfigModule::Print() const {
     for(const auto& unit : m_units){
         std::cout << FGRN("[INFO]")<<"::["<<m_name<<"]:: " << std::setw(20) << std::left << unit.first << "\t";
         m_unit_streamers.at(unit.second.type())(unit.second, std::cout<<std::setw(20) << std::left);
-        m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "[default]" : std::cout << FYEL("[modified]");
+        m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "[default]" : std::cout << FYEL("[custom]");
         std::cout<<std::endl;
     }
 }
