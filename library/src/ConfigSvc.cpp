@@ -112,3 +112,17 @@ toml::parse_result& ConfigSvc::ParseTomlFile(const std::string& file){
     m_toml_config = toml::parse_file(file);
     m_toml = true;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigSvc::PrintTomlConfig() const{
+    if(m_toml){
+        std::cout << "[ConfigSvc][INFO]:: PrintTomlConfig "<< std::endl;
+        // re-serialize as JSON
+        //std::cout << m_toml_config << "\n";
+        std::cout << toml::json_formatter{ m_toml_config } << "\n";
+    }
+    else {
+        std::cout << "[ConfigSvc][WARNING]:: PrintTomlConfig : any file was parsed.."<< std::endl;
+    }
+}

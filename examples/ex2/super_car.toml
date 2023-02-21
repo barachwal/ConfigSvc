@@ -1,0 +1,3 @@
+["Bolid"]       # Bolid is defined as the Configurable module
+Color = "Red"   # Configurable's units - ovveride the values defined in DefaultConfig() 
+Type = "A"

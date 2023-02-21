@@ -86,6 +86,9 @@ class ConfigSvc {
         ///
         toml::parse_result& ParseTomlFile(const std::string& file);
 
+        ///
+        void PrintTomlConfig() const;
+
 };
 
 template <typename T> T ConfigSvc::GetValue(const std::string& module, const std::string& unit, const char* caller) const {
