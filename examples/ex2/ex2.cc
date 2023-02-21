@@ -34,17 +34,16 @@ public:
 };
 
 int main(){
-    std::cout << "[Ex1]:: Example 1" << std::endl;
-    auto myCar = SuperCar("Bolid"); // it's already exists int the ConfigSvc!
+    std::cout << "[Ex2]:: Example 2" << std::endl;
 
     std::cout << std::endl;
-    auto configSvc = ConfigSvc::GetInstance();
+    auto configSvc = ConfigSvc::GetInstance(); // first initialize ConfigSvc and pars TOML file
     std::string ex_file = EXAMPLES;
     ex_file+="/ex2/super_car.toml";
-    // std::cout << ex_file <<  std::endl;
-
     configSvc->ParseTomlFile(ex_file);
     configSvc->PrintTomlConfig();
+
+    auto myCar = SuperCar("Bolid"); // Once the configuration is called the TOML config is being checked for "Bolid" module
     // std::cout << "[Ex1]:: myCar color       : "
     //           << configSvc->GetValue<std::string>("Bolid","Color") << std::endl;
     // std::cout << "[Ex1]:: myCar type        : "
@@ -54,5 +53,5 @@ int main(){
 
     // std::cout << std::endl;
     // configSvc->SetValue("Bolid","Color",std::string("Red"));
-    // configSvc->GetConfigModule("Bolid")->Print();
+    configSvc->GetConfigModule("Bolid")->Print();
 }
