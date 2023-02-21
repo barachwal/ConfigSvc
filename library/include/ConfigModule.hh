@@ -97,8 +97,8 @@ class ConfigModule {
         /// \brief Set value for a single unit
         void SetValue(const std::string& unit, std::any value);
 
-        ///
-        template <typename T> void SetValue(const std::string& unit, std::any value);
+        /// \brief Check and set value from TOML file if it's loaded
+        template <typename T> void SetTValue(const std::string& unit, std::any value);
 
         /// \brief Set value from TOML file if it's loaded
         void SetTomlValue(const std::string& unit);
@@ -127,10 +127,11 @@ class ConfigModule {
 };
 #include <iostream>
 
-template <typename T> void ConfigModule::SetValue(const std::string& unit, std::any value){
+template <typename T> void ConfigModule::SetTValue(const std::string& unit, std::any value){
     std::cout << "[DEBUG]:: ConfigModule::SetValue " << std::endl;
     if(IsUnitDefined(unit) && IsPublic(unit) ){
-        SetValue(unit,value); // Set default value first
+        if(!IsInitialized(unit))
+            SetValue(unit,value); // Set default value first
         if(m_toml){
             if((*m_toml_config)[m_name][unit].is_value()){  // found value in TOML file
                 auto toml_value = (*m_toml_config)[m_name][unit].value_or<T>(T()); 

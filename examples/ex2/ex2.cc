@@ -22,13 +22,13 @@ public:
         //     m_config->SetValue(unit, std::string("This is very nice car"));
         // }
         if (unit.compare("Color") == 0) {
-            m_config->SetValue<std::string>(unit, std::string("White"));
+            m_config->SetTValue<std::string>(unit, std::string("White"));
         }
         if (unit.compare("Type") == 0) {
             m_config->SetValue(unit, char('C'));
         }
         if (unit.compare("SpareTireNumber") == 0) {  // smart ptrs
-            m_config->SetValue<int>(unit, int(2));
+            m_config->SetTValue<int>(unit, int(2));
         }
     }
 };
@@ -53,5 +53,6 @@ int main(){
 
     // std::cout << std::endl;
     // configSvc->SetValue("Bolid","Color",std::string("Red"));
+    std::cout << std::endl;
     configSvc->GetConfigModule("Bolid")->Print();
 }
