@@ -119,6 +119,15 @@ class ConfigSvc {
         ///
         void PrintTomlConfig() const;
 
+        ///
+        bool IsTomlParsed() const { return m_toml; }
+
+        ///
+        toml::parse_result* GetTomlConfig() { return &m_toml_config; }
+
+        ///
+        template <typename T> T GetTomlValue(const std::string& module, const std::string& unit, T&& none) const;
+
 };
 
 template <typename T> T ConfigSvc::GetValue(const std::string& module, const std::string& unit, const char* caller) const {
@@ -127,5 +136,12 @@ template <typename T> T ConfigSvc::GetValue(const std::string& module, const std
         ConfigSvc::ARGUMENT_ERROR(callStack,module,"is not defined.");
     }
     return m_config_modules.at(module)->thisConfig()->GetValue<T>(unit);
+}
+
+template <typename T> T ConfigSvc::GetTomlValue(const std::string& module, const std::string& unit, T&& none ) const {
+    if(m_toml){
+        return m_toml_config[module][unit].value_or<T>(std::move(none));
+    }
+    return none;
 }
 #endif //CONFIGSVC_CONFIGSVC_HH

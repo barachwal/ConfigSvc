@@ -8,7 +8,13 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-ConfigModule::ConfigModule(const std::string& name): m_name(name){}
+ConfigModule::ConfigModule(const std::string& name): m_name(name){
+    auto configSvc = ConfigSvc::GetInstance();
+    if (configSvc->IsTomlParsed()){
+        m_toml = true;
+        m_toml_config = configSvc->GetTomlConfig();
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
@@ -30,6 +36,15 @@ void ConfigModule::SetValue(const std::string& unit, std::any value) {
             ConfigSvc::LOGIC_ERROR("ConfigModule::SetValue",m_name,"Given unit ("+ unit+") is read-only!!!");
     } else
         ConfigModule::NOT_DEFINED_UNIT_ERROR(m_name,unit);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigModule::SetTomlValue(const std::string& unit) {
+    auto configSvc = ConfigSvc::GetInstance();
+    if(configSvc->IsTomlParsed()){
+        auto value = configSvc->GetTomlValue<std::string>(m_name,unit,std::string()); // we get everything as string
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
