@@ -78,7 +78,7 @@ void ConfigModule::Print() const {
     ConfigSvc::INFO("[Module]::\""+m_name+"\" module configuration:");
     for(const auto& unit : m_units){
         std::cout << FGRN("[INFO]")<<"::["<<m_name<<"]:: " << std::setw(20) << std::left << unit.first << "\t";
-        m_unit_streamers.at(unit.second.type())(unit.second, std::cout<<std::setw(20) << std::left);
+        m_unit_streamers.at(unit.second.type())(unit.second, std::cout<<std::setw(20) << std::boolalpha << std::left);
         m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "[default]" : std::cout << FYEL("[custom]");
         std::cout<<std::endl;
     }
