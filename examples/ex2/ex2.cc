@@ -37,22 +37,19 @@ int main(){
     std::cout << "[Ex2]:: Example 2" << std::endl;
 
     std::cout << std::endl;
-    auto configSvc = ConfigSvc::GetInstance(); // first initialize ConfigSvc and pars TOML file
+    auto configSvc = ConfigSvc::GetInstance();  // we can initialize ConfigSvc and pars TOML file
+                                                // before the given module definition and default configuration happen
     std::string ex_file = EXAMPLES;
     ex_file+="/ex2/super_car.toml";
     configSvc->ParseTomlFile(ex_file);
-    configSvc->PrintTomlConfig();
+    // configSvc->PrintTomlConfig();
 
     auto myCar = SuperCar("Bolid"); // Once the configuration is called the TOML config is being checked for "Bolid" module
-    // std::cout << "[Ex1]:: myCar color       : "
-    //           << configSvc->GetValue<std::string>("Bolid","Color") << std::endl;
-    // std::cout << "[Ex1]:: myCar type        : "
-    //           << configSvc->GetValue<char>("Bolid","Type") << std::endl;
-    // std::cout << "[Ex1]:: myCar #spare tires: "
-    //           << configSvc->GetValue<int>("Bolid","SpareTireNumber") << std::endl;
-
-    // std::cout << std::endl;
-    // configSvc->SetValue("Bolid","Color",std::string("Red"));
     std::cout << std::endl;
+    // configSvc->GetConfigModule("Bolid")->Print();
+    std::cout << std::endl;
+    // configSvc->ParseTomlFile(ex_file);       // or we can parse TOML after the given module is instatiant and configured
     configSvc->GetConfigModule("Bolid")->Print();
+
+
 }

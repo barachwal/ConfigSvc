@@ -11,11 +11,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ///
 ConfigModule::ConfigModule(const std::string& name): m_name(name){
-    auto configSvc = ConfigSvc::GetInstance();
-    if (configSvc->IsTomlParsed()){
-        m_toml = true;
-        m_toml_config = configSvc->GetTomlConfig();
-    }
+    SetTomlConfig();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -135,4 +131,14 @@ bool ConfigModule::IsInitialized(const std::string& unit) const {
 ///
 void ConfigModule::NOT_DEFINED_UNIT_ERROR(const std::string& module, const std::string& unit){
     ConfigSvc::ARGUMENT_ERROR("ConfigModule::IsPublic",module,"Given unit (" + unit + ") is not defined.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigModule::SetTomlConfig(){
+    auto configSvc = ConfigSvc::GetInstance();
+    if (configSvc->IsTomlParsed()){
+        m_toml = true;
+        m_toml_config = configSvc->GetTomlConfig();
+    }
 }

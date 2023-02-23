@@ -125,6 +125,8 @@ std::shared_ptr<ConfigModule> ConfigSvc::GetConfigModule(const std::string& modu
 toml::parse_result& ConfigSvc::ParseTomlFile(const std::string& file){
     m_toml_config = toml::parse_file(file);
     m_toml = true;
+    if(!m_config_modules.empty())
+        ReloadConfiguration();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -137,5 +139,15 @@ void ConfigSvc::PrintTomlConfig() const{
     }
     else {
         std::cout << "[ConfigSvc]"<<FYEL("[WARNING]")<<":: PrintTomlConfig : any file was parsed.."<< std::endl;
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigSvc::ReloadConfiguration()const{
+    ConfigSvc::INFO(" Reload configuration...");
+    for(auto& module : m_config_modules){
+        module.second->thisConfig()->SetTomlConfig();
+        module.second->DefaultConfig();
     }
 }
