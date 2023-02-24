@@ -41,6 +41,9 @@ class ConfigSvc {
 
         ///
         static void NOT_REGISTERED_MODULE_ERROR(const std::string& caller,const std::string& module);
+
+        ///
+        void ReloadConfiguration() const;
     
     public:
         ///\brief Static method to get instance of this singleton object.

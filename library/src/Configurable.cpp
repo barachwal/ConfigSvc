@@ -21,14 +21,14 @@ Configurable::Configurable(const std::string& name):m_config(std::make_shared<Co
 ///
 void Configurable::DefaultConfig(){
     auto units = thisConfig()->GetUnitsNames();
+
+    // User's configuration implementation doesn't have to include the DefineUnit<>(\"Label\")"
+    // but it is being initialized by default to be same as name of given module.
+    // The 'Label' unit is being used in number of contexts...
     auto it = std::find (units.begin(), units.end(), "Label");
-    if (it != units.end()){
-        std::string message = "User's Configure implementation";
-        message+=" Doesn't have to include the DefineUnit<>(\"Label\")";
-        ConfigSvc::WARNING("Configurable::DefaultConfig",thisConfig()->GetName(),message);
-    } else {
+    if (it == units.end()){
         thisConfig()->DefineUnit<std::string>("Label",true);
-    }
+    } 
     units = thisConfig()->GetUnitsNames();
     for (const auto& unit : units){
         if(unit.compare("Name")!=0 && unit.compare("name")!=0){
@@ -36,7 +36,7 @@ void Configurable::DefaultConfig(){
         }
         else {
             std::string message = "User's DefaultConfig implementation";
-            message+=" shouldn't inlcude the \"Name\" unit.";
+            message+=" can't inlcude the \"Name\" unit.";
             message+=" Consider usage of the \"Label\" instead";
             message+=" (predefined by default with the \"Name\" of given module)";
             ConfigSvc::WARNING("Configurable::DefaultConfig",thisConfig()->GetName(),message);

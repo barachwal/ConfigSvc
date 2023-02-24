@@ -83,7 +83,7 @@ class ConfigModule {
         bool IsUnitDefined(const std::string& unit) const;
 
         ///
-        template <typename T> void DefineUnit(const std::string& unit, bool isPublic);
+        template <typename T> void DefineUnit(const std::string& unit, bool isPublic=true);
 
         /// \brief Set value for a single unit
         void SetValue(const std::string& unit, std::any value);
@@ -112,8 +112,10 @@ class ConfigModule {
 
         ///
         void Print() const;
+
+        ///
+        void SetTomlConfig();
 };
-#include <iostream>
 
 template <typename T> void ConfigModule::SetTValue(const std::string& unit, std::any value){
     if(IsUnitDefined(unit) && IsPublic(unit) ){
@@ -121,7 +123,7 @@ template <typename T> void ConfigModule::SetTValue(const std::string& unit, std:
             SetValue(unit,value); // Set default value first
         if(m_toml){
             if((*m_toml_config)[m_name][unit].is_value()){  // found value in TOML file
-                auto toml_value = (*m_toml_config)[m_name][unit].value_or<T>(T()); 
+                auto toml_value = (*m_toml_config)[m_name][unit].value_or<T>(T());
                 SetValue(unit,toml_value); // Set again with new value
             }
 

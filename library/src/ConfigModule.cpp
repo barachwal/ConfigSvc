@@ -11,11 +11,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ///
 ConfigModule::ConfigModule(const std::string& name): m_name(name){
-    auto configSvc = ConfigSvc::GetInstance();
-    if (configSvc->IsTomlParsed()){
-        m_toml = true;
-        m_toml_config = configSvc->GetTomlConfig();
-    }
+    SetTomlConfig();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -81,8 +77,8 @@ std::vector<std::string> ConfigModule::GetUnitsNames() const {
 void ConfigModule::Print() const {
     ConfigSvc::INFO("[Module]::\""+m_name+"\" module configuration:");
     for(const auto& unit : m_units){
-        std::cout << FGRN("[INFO]")<<"::["<<m_name<<"]:: " << std::setw(20) << std::left << unit.first << "\t";
-        m_unit_streamers.at(unit.second.type())(unit.second, std::cout<<std::setw(20) << std::left);
+        std::cout << FGRN("[INFO]")<<"::[Unit]:: "<<m_name<<":: " << std::setw(20) << std::left << unit.first << "\t";
+        m_unit_streamers.at(unit.second.type())(unit.second, std::cout<<std::setw(20) << std::boolalpha << std::left);
         m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "[default]" : std::cout << FYEL("[custom]");
         std::cout<<std::endl;
     }
@@ -135,4 +131,14 @@ bool ConfigModule::IsInitialized(const std::string& unit) const {
 ///
 void ConfigModule::NOT_DEFINED_UNIT_ERROR(const std::string& module, const std::string& unit){
     ConfigSvc::ARGUMENT_ERROR("ConfigModule::IsPublic",module,"Given unit (" + unit + ") is not defined.");
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigModule::SetTomlConfig(){
+    auto configSvc = ConfigSvc::GetInstance();
+    if (configSvc->IsTomlParsed()){
+        m_toml = true;
+        m_toml_config = configSvc->GetTomlConfig();
+    }
 }
