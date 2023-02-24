@@ -116,7 +116,6 @@ class ConfigModule {
         ///
         void SetTomlConfig();
 };
-#include <iostream>
 
 template <typename T> void ConfigModule::SetTValue(const std::string& unit, std::any value){
     if(IsUnitDefined(unit) && IsPublic(unit) ){
