@@ -74,11 +74,15 @@ class Configurable : public std::enable_shared_from_this<Configurable> {
         ///\brief Call default configuration for all defined units
         void DefaultConfig();
 
+        ///\brief Virtual method to enable final class config walidation method to be implemented.
+        virtual bool ValidateConfig() const { return true; }
+
         /// /// Simple wrapper to  ConfigModule::DefineUnit
         void PrintConfig() const { m_config->Print(); }
 
         ///\brief Get pointer to the actual Configuration object being created for a given module.
         std::shared_ptr<ConfigModule> thisConfig() { return m_config; }
+        std::shared_ptr<ConfigModule> thisConfig() const { return m_config; }
 
         ///
         ConfigSvc* configSvc() const { return m_configSvc; }

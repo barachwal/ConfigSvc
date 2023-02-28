@@ -110,6 +110,10 @@ class ConfigSvc {
         ///
         template <typename T> T GetTomlValue(const std::string& module, const std::string& unit, T&& none) const;
 
+        ///\brief Run across all registered modules and validate their config trough Configurable::ValidateConfig() method
+        void ValidateConfiguration() const;
+
+
 };
 
 template <typename T> T ConfigSvc::GetValue(const std::string& module, const std::string& unit, const char* caller) const {
