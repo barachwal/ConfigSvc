@@ -53,7 +53,8 @@ void Configurable::DefaultConfig(){
         
     }*/
 
-    if(!thisConfig()->IsInitialized())
+    if(!thisConfig()->IsInitialized()){
         ConfigSvc::LOGIC_ERROR("Configurable::DefaultConfig",thisConfig()->GetName(),"is not fully initialized!");
+    }
 }
 

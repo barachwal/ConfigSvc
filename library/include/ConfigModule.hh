@@ -40,7 +40,7 @@ class ConfigModule {
         std::map<std::string, UnitState> m_units_state;
 
         ///
-        toml::parse_result* m_toml_config;
+        toml::parse_result* m_toml_config = nullptr;
 
         ///
         bool m_toml = false;
@@ -55,7 +55,7 @@ class ConfigModule {
         bool IsPublic(const std::string& unit) const;
 
         ///
-        void UnitStateUpdate(const std::string& unit);
+        void UnitStateUpdate(const std::string& unit, bool is_default);
 
         /// \brief Get status of the value initialization for all units for the given module.
         bool IsInitialized() const;
@@ -86,7 +86,7 @@ class ConfigModule {
         template <typename T> void DefineUnit(const std::string& unit, bool isPublic=true);
 
         /// \brief Set value for a single unit
-        void SetValue(const std::string& unit, std::any value);
+        void SetValue(const std::string& unit, std::any value, bool is_default=true);
 
         /// \brief Check and set value from TOML file if it's loaded
         template <typename T> void SetTValue(const std::string& unit, std::any value);
@@ -120,13 +120,12 @@ class ConfigModule {
 template <typename T> void ConfigModule::SetTValue(const std::string& unit, std::any value){
     if(IsUnitDefined(unit) && IsPublic(unit) ){
         if(!IsInitialized(unit))
-            SetValue(unit,value); // Set default value first
-        if(m_toml){
+            SetValue(unit,value,true); // Set default value
+        if(m_toml && m_toml_config){
             if((*m_toml_config)[m_name][unit].is_value()){  // found value in TOML file
                 auto toml_value = (*m_toml_config)[m_name][unit].value_or<T>(T());
-                SetValue(unit,toml_value); // Set again with new value
+                SetValue(unit,toml_value, false); // Set again with new value
             }
-
         }
     }
 }

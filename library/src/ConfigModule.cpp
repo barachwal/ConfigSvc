@@ -22,12 +22,13 @@ bool ConfigModule::IsUnitDefined(const std::string& unit) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ConfigModule::SetValue(const std::string& unit, std::any value) {
+void ConfigModule::SetValue(const std::string& unit, std::any value, bool is_default) {
     if (IsUnitDefined(unit)) {
-        if(IsPublic(unit)){
+        m_units_state.at(unit).IsInitialized();
+        if(IsPublic(unit) ){
             if (m_units[unit].type() == value.type()) {
                 m_units.at(unit) = value;
-                UnitStateUpdate(unit);
+                UnitStateUpdate(unit,is_default);
             } else
                 ConfigSvc::ARGUMENT_ERROR("ConfigModule::SetValue",m_name,"Given unit (\""+ unit+"\" is of wrong type value");
         } else
@@ -77,9 +78,9 @@ std::vector<std::string> ConfigModule::GetUnitsNames() const {
 void ConfigModule::Print() const {
     ConfigSvc::INFO("[Module]::\""+m_name+"\" module configuration:");
     for(const auto& unit : m_units){
-        std::cout << FGRN("[INFO]")<<"::[Unit]:: "<<m_name<<":: " << std::setw(20) << std::left << unit.first << "\t";
+        std::cout << FGRN("[INFO]")<<":: "<<m_name <<":: "<< std::setw(20) << std::left << unit.first << "\t";
         m_unit_streamers.at(unit.second.type())(unit.second, std::cout<<std::setw(20) << std::boolalpha << std::left);
-        m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "[default]" : std::cout << FYEL("[custom]");
+        m_units_state.at(unit.first).IsDefaultValue() ? std::cout << "  [default]" : std::cout << FYEL("  [custom]");
         std::cout<<std::endl;
     }
 }
@@ -94,25 +95,25 @@ bool ConfigModule::IsPublic(const std::string& unit) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ConfigModule::UnitStateUpdate(const std::string& unit){
+void ConfigModule::UnitStateUpdate(const std::string& unit, bool is_default){
     if (IsUnitDefined(unit)) {
         // check if this unit was initialised to default value
         if (!m_units_state.at(unit).IsInitialized()) {
             // after first call of this method the unit is assumed being initialized
             m_units_state.at(unit).IsInitialized(true);
-            // assume first call of this method by the default configuration process
-            m_units_state.at(unit).IsDefaultValue(true);
-        } else {
-            m_units_state.at(unit).IsDefaultValue(false);
-        }
+        } 
+        m_units_state.at(unit).IsDefaultValue(is_default);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
 bool ConfigModule::IsInitialized() const {
-    for(const auto& unit : m_units_state)
-        if (!unit.second.IsInitialized()) return false;
+    for(const auto& unit : m_units_state){
+        if (!unit.second.IsInitialized()){
+            return false;
+        }
+    }
     return true;
 }
 

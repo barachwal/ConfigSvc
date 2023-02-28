@@ -63,10 +63,10 @@ bool ConfigSvc::IsRegistered(const std::string& module) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ConfigSvc::SetValue(const std::string& module, const std::string& unit, std::any value) {
+void ConfigSvc::SetValue(const std::string& module, const std::string& unit, std::any value, bool is_deafult) {
     if (!IsRegistered(module))
         ConfigSvc::NOT_REGISTERED_MODULE_ERROR("ConfigSvc::SetValue",module);
-    m_config_modules.at(module)->thisConfig()->SetValue(unit, value);
+    m_config_modules.at(module)->thisConfig()->SetValue(unit, value, is_deafult);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -127,6 +127,7 @@ toml::parse_result& ConfigSvc::ParseTomlFile(const std::string& file){
     m_toml = true;
     if(!m_config_modules.empty())
         ReloadConfiguration();
+    return m_toml_config;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -145,9 +146,37 @@ void ConfigSvc::PrintTomlConfig() const{
 ////////////////////////////////////////////////////////////////////////////////
 ///
 void ConfigSvc::ReloadConfiguration()const{
-    ConfigSvc::INFO(" Reload configuration...");
+    // std::cout << " ReloadConfiguration debug... " << std::endl;
+
     for(auto& module : m_config_modules){
-        module.second->thisConfig()->SetTomlConfig();
-        module.second->DefaultConfig();
+        auto name = module.second->thisConfig()->GetName();
+        if(IsTomlParsed(name)){
+            ConfigSvc::INFO("Reload configuration for \""+name+"\"...");
+            module.second->thisConfig()->SetTomlConfig();
+            module.second->DefaultConfig();
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+bool ConfigSvc::IsTomlParsed(const std::string& module) const { 
+    if (module.empty()) // generic check for any module
+        return m_toml; 
+    if (m_toml_config.find(module)!=m_toml_config.end() )
+        return true;
+    return false;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+///
+void ConfigSvc::ValidateConfiguration() const{
+    // std::cout << " ValidateConfiguration debug... " << std::endl;
+    for(const auto& module : m_config_modules){
+        auto valid = module.second->ValidateConfig();
+        if(!valid){
+            std::string msg = "Not valid configuration!";
+            ConfigSvc::ARGUMENT_ERROR("ValidateConfig", module.second->thisConfig()->GetName(),msg);
+        }
     }
 }

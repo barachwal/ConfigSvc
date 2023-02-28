@@ -31,6 +31,14 @@ public:
             m_config->SetTValue<int>(unit, int(2));
         }
     }
+    bool ValidateConfig() const override {
+        auto stn = thisConfig()->GetValue<int>("SpareTireNumber");
+        if(stn<3){
+            std::cout << "[SuperCar]:: To less spare tires in the care!!!" << std::endl;
+            return false;
+        }
+        return true;
+    }
 };
 
 int main(){
@@ -50,6 +58,7 @@ int main(){
     std::cout << std::endl;
     // configSvc->ParseTomlFile(ex_file);       // or we can parse TOML after the given module is instatiant and configured
     configSvc->GetConfigModule("Bolid")->Print();
+    configSvc->ValidateConfiguration();
 
 
 }
