@@ -68,7 +68,7 @@ class ConfigSvc {
         static void INFO(const std::string& message);
 
         ///\brief The main comunication method for changing the actual value of the particular unit of a given module.
-        void SetValue(const std::string& module, const std::string& unit, std::any value);
+        void SetValue(const std::string& module, const std::string& unit, std::any value, bool is_deafult=true);
 
         ///\brief The main communication method for getting the actual value of the particular unit of a given module.
         template <typename T> T GetValue(const std::string& module, const std::string& unit, const char* caller = __builtin_FUNCTION()) const;
@@ -102,7 +102,7 @@ class ConfigSvc {
         void PrintTomlConfig() const;
 
         ///
-        bool IsTomlParsed() const { return m_toml; }
+        bool IsTomlParsed(const std::string& module=std::string()) const;
 
         ///
         toml::parse_result* GetTomlConfig() { return &m_toml_config; }
