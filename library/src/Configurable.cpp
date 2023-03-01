@@ -57,4 +57,10 @@ void Configurable::DefaultConfig(){
         ConfigSvc::LOGIC_ERROR("Configurable::DefaultConfig",thisConfig()->GetName(),"is not fully initialized!");
     }
 }
+////////////////////////////////////////////////////////////////////////////////
+///
+bool Configurable::ValidateConfig() const {
+    return configSvc()->ValidateConfiguration(m_config->GetName());
+}
+
 

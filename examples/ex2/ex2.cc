@@ -39,6 +39,11 @@ public:
         }
         return true;
     }
+
+    // once you have extra method to initialize instance
+    void Initialize(){
+        Configurable::ValidateConfig(); // you can check if the configuration is OK
+    }
 };
 
 int main(){
@@ -58,7 +63,8 @@ int main(){
     std::cout << std::endl;
     // configSvc->ParseTomlFile(ex_file);       // or we can parse TOML after the given module is instatiant and configured
     configSvc->GetConfigModule("Bolid")->Print();
-    configSvc->ValidateConfiguration();
+    // configSvc->ValidateConfiguration();
+    myCar.Initialize();
 
 
 }

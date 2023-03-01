@@ -146,8 +146,6 @@ void ConfigSvc::PrintTomlConfig() const{
 ////////////////////////////////////////////////////////////////////////////////
 ///
 void ConfigSvc::ReloadConfiguration()const{
-    // std::cout << " ReloadConfiguration debug... " << std::endl;
-
     for(auto& module : m_config_modules){
         auto name = module.second->thisConfig()->GetName();
         if(IsTomlParsed(name)){
@@ -170,13 +168,21 @@ bool ConfigSvc::IsTomlParsed(const std::string& module) const {
 
 ////////////////////////////////////////////////////////////////////////////////
 ///
-void ConfigSvc::ValidateConfiguration() const{
-    // std::cout << " ValidateConfiguration debug... " << std::endl;
-    for(const auto& module : m_config_modules){
-        auto valid = module.second->ValidateConfig();
-        if(!valid){
-            std::string msg = "Not valid configuration!";
-            ConfigSvc::ARGUMENT_ERROR("ValidateConfig", module.second->thisConfig()->GetName(),msg);
+bool ConfigSvc::ValidateConfiguration(const std::string& module) const{
+    std::string module_name = "None";
+    bool valid = false;
+    if(module.empty()){
+        for(const auto& module : m_config_modules){
+            module_name = module.second->thisConfig()->GetName();
+            valid = module.second->ValidateConfig();
         }
+    } else {
+        module_name = module;
+        valid = m_config_modules.at(module_name)->ValidateConfig();
     }
+    if(!valid){
+            std::string msg = "Not valid configuration!";
+            ConfigSvc::ARGUMENT_ERROR("ValidateConfig", module_name,msg);
+        }
+    return valid;
 }
